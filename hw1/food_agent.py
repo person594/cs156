@@ -19,9 +19,10 @@ def readMaze(f) :
 
 def printMaze(m) :
 	for row in m:
+		s = ""
 		for el in row:
-			print el,
-		print
+			s += el
+		print s
 		
 
 printMaze(readMaze(textFile))
