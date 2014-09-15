@@ -1,6 +1,7 @@
 import sys
 import math
 import heapq
+import copy
 
 if len(sys.argv) != 3 :
 	print "Usage : python food_agent.py file_name heuristic"
@@ -43,57 +44,93 @@ def isOpen(row, col, maze):
 	else: return False
 
 heur = sys.argv[2]
-
-if heur == "euclidian" :
-	def heuristic(player, goal) :
-		dx = player[0] - goal[0]
-		dy = player[1] - goal[1]
-		return math.sqrt(dx*dx + dy*dy)
-elif heur == "manhattan" :
-		def heuristic(player, goal) :
-			dx = player[0] - goal[0]
-			dy = player[1] - goal[1]
-			return abs(dx) + abs(dy);
-	
-	
-frontier = []
-costs = {}
-def aStar(start, dest, traveled, maze):
-	if start == dest:
-		return []
-	r0 = start[0]
-	c0 = start[1]
-	r1 = dest[0]
-	c1 = dest[1]
-	currentFrontier = []
-	if isOpen(r0-1, c0, maze):
-		currentFrontier.append((r0-1, c0))
-	if isOpen(r0+1, c0, maze):
-		currentFrontier.append((r0+1, c0))
-	if isOpen(r0, c0-1, maze):
-		currentFrontier.append((r0, c0-1))
-	if isOpen(r0, c0+1, maze):
-		currentFrontier.append((r0, c0+1))
-		
-	for node in currentFrontier:
-		if node in costs:
-			costs[node] = min(costs[node], traveled + 1 + heuristic(node, dest))
-		else: costs[node] = heuristic(node, dest) + 1
-		
-	def comp(a, b):
-		#print (a, b, costs[a], costs[b], costs[a] - costs[b])
-		return int(costs[a] - costs[b])
-	
-	#print currentFrontier
-	currentFrontier.sort(comp)
-	#print currentFrontier
-	for node in frontier:
-		if
-	
-	
-
 m = readMaze(textFile)
 playerLoc = findChar('@', m)
 goalLoc = findChar('%', m)
-costs[playerLoc] = heuristic(playerLoc, goalLoc)
-aStar(playerLoc, goalLoc, 0, m)
+
+def euclidian(player, goal):
+	dx = player[0] - goal[0]
+	dy = player[1] - goal[1]
+	return math.sqrt(dx*dx + dy*dy)
+	
+def manhattan(player, goal):
+	dx = player[0] - goal[0]
+	dy = player[1] - goal[1]
+	return abs(dx) + abs(dy);
+
+manhattanDiag = (len(m) + len(m[0])) 
+
+#this is actually really slow, not a good heuristic at all...
+def manhattanSquared(player, goal):
+	square = manhattan(player, goal) * manhattan(player, goal)
+	return square / manhattanDiag
+	
+if heur == "euclidian" :
+	heuristic = euclidian
+elif heur == "manhattan" :
+	heuristic = manhattan
+else:
+	heuristic = manhattanSquared
+	
+	
+def aStar2(start, dest, maze):
+	visited = {start}
+	current = start
+	frontier = set()
+	paths = {start : []}
+	while current != dest:
+		r = current[0]
+		c = current[1]
+		newFrontier = set()
+		if isOpen(r-1, c, maze) and not (r-1, c) in visited:
+			newFrontier |= {((r-1, c))}
+		if isOpen(r+1, c, maze) and not (r+1, c) in visited:
+			newFrontier |= {(r+1, c)}
+		if isOpen(r, c-1, maze) and not (r, c-1) in visited:
+			newFrontier |= {(r, c-1)}
+		if isOpen(r, c+1, maze) and not (r, c+1) in visited:
+			newFrontier |= {(r, c+1)}
+		
+		for node in newFrontier:
+			if (not node in paths) or len(paths[node]) > len(paths[current]) + 1:
+				newPath = copy.copy(paths[current]);
+				newPath.append(current);
+				paths[node] = newPath;
+				
+		frontier |= newFrontier
+		#print frontier
+		
+		def comp(a, b):
+			return int((len(paths[a]) + heuristic(a, dest)) - (len(paths[b]) + heuristic(b, dest)))
+		
+		if frontier == set():
+			return None
+		frontierList = list(frontier)
+		frontierList.sort(comp)
+		#print frontierList
+		current = frontierList[0]
+		visited |= {current}
+		frontier -= {current}
+	ret = paths[current]
+	ret.append(current)
+	return ret
+
+def printPath(path, maze):
+	if not path:
+		print "No solution :("
+		return
+	step = 0
+	for node in path:
+		if step == 0:
+			print "Initial:"
+		else:
+			print "Step " + str(step) + ":"
+		maze[node[0]][node[1]] = '@'
+		printMaze(m)
+		maze[node[0]][node[1]] = ' '
+		step += 1
+		print
+	print "Problem Solved! I had some noodles!"
+
+#printPath(aStar2(playerLoc, goalLoc, m), m)
+aStar2(playerLoc, goalLoc, m)
