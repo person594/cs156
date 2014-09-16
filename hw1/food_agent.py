@@ -1,3 +1,10 @@
+#Homework 1
+#A* Algorithm
+#authors:
+# Sean Papay
+# Ryan Lichtig
+# Dakota Polenz
+
 import sys
 import math
 import heapq
@@ -52,8 +59,8 @@ m = read_maze(textFile)
 playerLoc = find_char('@', m)
 goalLoc = find_char('%', m)
 if not (playerLoc and goalLoc):
-	print "No solution :(\nNo soup for you"
-	quit()
+    print "No solution :(\nNo soup for you"
+    quit()
 
 #euclidian distance between two points
 def euclidian(player, goal):
@@ -74,33 +81,33 @@ def manhattan(player, goal):
 #2 + the manhattan distance
 def custom(player, goal):
     if player[1] == goal[1] and (player[0] < rowMin or player[0] > rowMax):
-		    return manhattan(player, goal) + 2
-		
+            return manhattan(player, goal) + 2
+        
     if player[0] == goal[0] and (player[1] < colMin or player[1] > colMax):
-		    return manhattan(player, goal) + 2
+            return manhattan(player, goal) + 2
     else:
-	      return manhattan(player, goal)
+          return manhattan(player, goal)
 
 def preprocessMaze(goal, maze):
-	r = goal[0]
-	c = goal[1]
-	global rowMin, rowMax, colMin, colMax
-	while r > 0 and is_open(r, c, maze):
-		r-= 1
-	rowMin = r
-	r = goal[0]
-	while r < len(maze) and is_open(r, c, maze):
-		r += 1
-	rowMax = r
-	r = goal[0]
-	
-	while c > 0 and is_open(r, c, maze):
-		c-= 1
-	colMin = c
-	c = goal[1]
-	while c < len(maze[r]) and is_open(r, c, maze):
-		c += 1
-	colMax = c
+    r = goal[0]
+    c = goal[1]
+    global rowMin, rowMax, colMin, colMax
+    while r > 0 and is_open(r, c, maze):
+        r-= 1
+    rowMin = r
+    r = goal[0]
+    while r < len(maze) and is_open(r, c, maze):
+        r += 1
+    rowMax = r
+    r = goal[0]
+    
+    while c > 0 and is_open(r, c, maze):
+        c-= 1
+    colMin = c
+    c = goal[1]
+    while c < len(maze[r]) and is_open(r, c, maze):
+        c += 1
+    colMax = c
     
 if heur == "euclidian" :
     heuristic = euclidian
@@ -137,7 +144,7 @@ def a_star(start, dest, maze):
                 paths[node] = newPath;
                 traveled[node] = traveled[current]+1
             heapq.heappush(frontier, (traveled[node] + 
-							heuristic(node, dest), node))
+                heuristic(node, dest), node))
         
         if frontier == []:
             return None
