@@ -73,7 +73,7 @@ else:
 	heuristic = manhattanSquared
 	
 	
-def aStar2(start, dest, maze):
+def aStar(start, dest, maze):
 	visited = {start}
 	current = start
 	frontier = []
@@ -122,10 +122,10 @@ def printPath(path, maze):
 			print "Step " + str(step) + ":"
 		maze[node[0]][node[1]] = '@'
 		printMaze(m)
-		maze[node[0]][node[1]] = ' '
+		maze[node[0]][node[1]] = '.'
 		step += 1
 		print
 	print "Problem Solved! I had some noodles!"
 
-printPath(aStar2(playerLoc, goalLoc, m), m)
-#aStar2(playerLoc, goalLoc, m)
+printPath(aStar(playerLoc, goalLoc, m), m)
+#aStar(playerLoc, goalLoc, m)
