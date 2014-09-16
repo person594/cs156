@@ -76,8 +76,9 @@ else:
 def aStar2(start, dest, maze):
 	visited = {start}
 	current = start
-	frontier = set()
+	frontier = []
 	paths = {start : []}
+	traveled = {start : 0}
 	while current != dest:
 		r = current[0]
 		c = current[1]
@@ -92,30 +93,19 @@ def aStar2(start, dest, maze):
 			newFrontier |= {(r, c+1)}
 		
 		for node in newFrontier:
-			if (not node in paths) or len(paths[node]) > len(paths[current]) + 1:
+			if (not node in traveled) or traveled[node] > traveled[current] + 1:
 				newPath = copy.copy(paths[current]);
 				newPath.append(current);
 				paths[node] = newPath;
-				
-		frontier |= newFrontier
+				traveled[node] = traveled[current]+1
+			heapq.heappush(frontier, (traveled[node] + heuristic(node, dest), node))
 		
-		def comp(a, b):
-			costA = len(paths[a]) + heuristic(a, dest)
-			costB = len(paths[b]) + heuristic(b, dest)
-			if costA < costB:
-				return -1
-			elif costA == costB:
-				return 0
-			else:
-				return 1
-		
-		if frontier == set():
+		if frontier == []:
 			return None
-		frontierList = list(frontier)
-		frontierList.sort(comp)
-		current = frontierList[0]
 		visited |= {current}
-		frontier -= {current}
+		while current in visited:
+			current = heapq.heappop(frontier)[1]
+		
 	ret = paths[current]
 	ret.append(current)
 	return ret
