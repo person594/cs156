@@ -98,16 +98,21 @@ def aStar2(start, dest, maze):
 				paths[node] = newPath;
 				
 		frontier |= newFrontier
-		#print frontier
 		
 		def comp(a, b):
-			return int((len(paths[a]) + heuristic(a, dest)) - (len(paths[b]) + heuristic(b, dest)))
+			costA = len(paths[a]) + heuristic(a, dest)
+			costB = len(paths[b]) + heuristic(b, dest)
+			if costA < costB:
+				return -1
+			elif costA == costB:
+				return 0
+			else:
+				return 1
 		
 		if frontier == set():
 			return None
 		frontierList = list(frontier)
 		frontierList.sort(comp)
-		#print frontierList
 		current = frontierList[0]
 		visited |= {current}
 		frontier -= {current}
@@ -132,5 +137,5 @@ def printPath(path, maze):
 		print
 	print "Problem Solved! I had some noodles!"
 
-#printPath(aStar2(playerLoc, goalLoc, m), m)
-aStar2(playerLoc, goalLoc, m)
+printPath(aStar2(playerLoc, goalLoc, m), m)
+#aStar2(playerLoc, goalLoc, m)
