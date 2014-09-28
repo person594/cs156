@@ -119,10 +119,49 @@ def undo_move(state, draw_history):
 	return
 	
 def is_game_over(state):
-	return
+	partial_state = state[2]
+	if state[0].len == 0 or state[1].len == 0 or partial_state[2] == 0
+		return true
+	return false
+	
 def get_winner(state):
-	return
-
+	partial_state = state[2]
+	history = partial_state[3]
+	
+	# Using this to set the hands appropriately
+	p0_hand = []
+	p1_hand = []
+	most_recent_move = history[-1]
+	if most_recent_move[0] == 0
+		p1_hand = partial_state[2]
+		p0_hand = state[1]
+	elif most_recent_move[0] == 1
+		p1_hand = state[1]
+		p0_hand = partial_state[2]
+		
+	# if player 1's hand size is 0
+	if p1_hand.len == 0
+		return 1
+		
+	# if player 0's hand size is 0	
+	if p0_hand.len == 0
+		return 0
+	
+	difference = p0_hand.len - p1_hand.len
+	
+	# If player 0's hand is smaller than player 1's hand
+	if difference < 0
+		return 0
+	
+	# If player 1's hand is smaller than player 0's hand
+	elif difference > 0
+		return 1
+		
+	# If both player's hands are equal size	
+	elif difference = 0
+		return get_lowest_card_winner(p0_hand, p1_hand)
+		
+	return - 1
 
 class CrazyEight:
 	def move(self, partial_state):
