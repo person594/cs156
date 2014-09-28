@@ -11,8 +11,8 @@ def get_rank(card_number):
 	
 def gen_initial_state():
     deck = random.sample(range(52),52)
-    p0_hand[]
-    p1_hand[]
+    p0_hand = []
+    p1_hand = []
     count = 0
     while (count < 8)
     	p0_hand.append(deck.pop())
@@ -20,7 +20,7 @@ def gen_initial_state():
     	count += 1
     face_up_card = deck.pop()
     initial_move = (1,face_up_card,get_suit(face_up_card),0)
-    initial_partial_state = (face_up_card,get_suit(face_up_card),p0_hand,initial_move)
+    initial_partial_state = (face_up_card,get_suit(face_up_card),p0_hand,[initial_move])
     intiail_state = (deck,p1_hand,initial_partial_state)
 	return initial_state
 
