@@ -1,5 +1,7 @@
 <<<<<<< HEAD
 import random
+
+player_number = 0
     
 def get_suit(card_number):
 	#Suit is an integer among 0,1,2,3
@@ -23,23 +25,7 @@ def get_rank(card_number):
 def gen_initial_state():
     deck = random.sample(range(52),52)
 	return
-def gen_moves(partial_state):
-    return
-def make_move(move, state):
-    return
-def undo_move(state):
-    return
-def is_game_over(state):
-    return
-def get_winner(state):
-    return
-=======
-player_number = 0
 
-def shuffle_deck():
-	return
-def gen_initial_state():
-	return
 def gen_moves(partial_state):
 	return
 def make_move(move, state):
