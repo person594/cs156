@@ -2,7 +2,7 @@
 import random
 
 player_number = 0
-    
+		
 def get_suit(card_number):
 	return card_number / 13
 
@@ -19,27 +19,27 @@ def flip_state(state):
 	return (deck, old_hand, (partial_state[0], partial_state[1], new_hand, partial_state[3]))
 	
 def gen_initial_state():
-    deck = random.sample(range(52),52)
-    p0_hand = []
-    p1_hand = []
-    count = 0
-    while (count < 8)
-    	p0_hand.append(deck.pop())
-    	p1_hand.append(deck.pop())
-    	count += 1
-    face_up_card = deck.pop()
-    initial_move = (1,face_up_card,get_suit(face_up_card),0)
-    initial_partial_state = (face_up_card,get_suit(face_up_card),p0_hand,[initial_move])
-    intiail_state = (deck,p1_hand,initial_partial_state)
+	deck = random.sample(range(52),52)
+	p0_hand = []
+	p1_hand = []
+	count = 0
+	while count < 8:
+		p0_hand.append(deck.pop())
+		p1_hand.append(deck.pop())
+		count += 1
+	face_up_card = deck.pop()
+	initial_move = (1,face_up_card,get_suit(face_up_card),0)
+	initial_partial_state = (face_up_card,get_suit(face_up_card),p0_hand,[initial_move])
+	initial_state = (deck,p1_hand,initial_partial_state)
 	return initial_state
 
 def gen_moves(partial_state):
-    move_list = {}
+	move_list = {}
 	#May screw up everthing!!!
 	player_number = 1 - len(partial_state[3]) % 2
-    current_card = partial_state[0]
-    curernt_suit = partial_state[1]
-    current_hand = partial_state[2]
+	current_card = partial_state[0]
+	curernt_suit = partial_state[1]
+	current_hand = partial_state[2]
 	current_rank = get_rank(current_card)
 	two_special_case= 0
 	if (current_rank == 2):
@@ -69,7 +69,7 @@ def gen_moves(partial_state):
 	
 
 def make_move(move, state, draw_history):
-	if move[0] == 1:
+	#if move[0] == 1:
 		#flip state
 	partial_state = state[2]
 	card_played = move[1]
@@ -92,13 +92,13 @@ def make_move(move, state, draw_history):
 	end_state = (deck, state[1], (card_played, suit, hand, history))
 	# flip back if needed
 	
-	return return end_state
+	return end_state
 	
 def undo_move(state, draw_history):
 	move = state[2][3].pop()
-	if (move[0] == 1):
+	#if (move[0] == 1):
 		#flip state
-	partial_state state[2]
+	partial_state = state[2]
 	hand = partial_state
 	history = partial_state[3]
 	cards_drawn = move[3]
@@ -120,7 +120,7 @@ def undo_move(state, draw_history):
 	
 def is_game_over(state):
 	partial_state = state[2]
-	if state[0].len == 0 or state[1].len == 0 or partial_state[2] == 0
+	if state[0].len == 0 or state[1].len == 0 or partial_state[2] == 0:
 		return true
 	return false
 	
@@ -132,33 +132,33 @@ def get_winner(state):
 	p0_hand = []
 	p1_hand = []
 	most_recent_move = history[-1]
-	if most_recent_move[0] == 0
+	if most_recent_move[0] == 0:
 		p1_hand = partial_state[2]
 		p0_hand = state[1]
-	elif most_recent_move[0] == 1
+	elif most_recent_move[0] == 1:
 		p1_hand = state[1]
 		p0_hand = partial_state[2]
 		
 	# if player 1's hand size is 0
-	if p1_hand.len == 0
+	if p1_hand.len == 0:
 		return 1
 		
 	# if player 0's hand size is 0	
-	if p0_hand.len == 0
+	if p0_hand.len == 0:
 		return 0
 	
 	difference = p0_hand.len - p1_hand.len
 	
 	# If player 0's hand is smaller than player 1's hand
-	if difference < 0
+	if difference < 0:
 		return 0
 	
 	# If player 1's hand is smaller than player 0's hand
-	elif difference > 0
+	elif difference > 0:
 		return 1
 		
 	# If both player's hands are equal size	
-	elif difference = 0
+	elif difference == 0:
 		return get_lowest_card_winner(p0_hand, p1_hand)
 		
 	return - 1
@@ -168,3 +168,7 @@ class CrazyEight:
 		return
 	def move_perfect_knowlege(self, state):
 		return
+		
+state = gen_initial_state()
+print (state)
+print flip_state(state)
