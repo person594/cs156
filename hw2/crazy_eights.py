@@ -20,25 +20,25 @@ def flip_state(state):
 	
 def gen_initial_state():
 	deck = random.sample(range(52),52)
-	p0_hand = []
-	p1_hand = []
+	p0_hand = set()
+	p1_hand = set()
 	count = 0
 	while count < 8:
-		p0_hand.append(deck.pop())
-		p1_hand.append(deck.pop())
+		p0_hand |= {deck.pop()}
+		p1_hand |= {deck.pop()}
 		count += 1
 	face_up_card = deck.pop()
 	initial_move = (1,face_up_card,get_suit(face_up_card),0)
-	initial_partial_state = (face_up_card,get_suit(face_up_card),p0_hand,[initial_move])
-	initial_state = (deck,p1_hand,initial_partial_state)
+	initial_partial_state = (face_up_card, get_suit(face_up_card), p0_hand, [initial_move])
+	initial_state = (deck, p1_hand, initial_partial_state)
 	return initial_state
 
 def gen_moves(partial_state):
-	move_list = {}
+	move_list = []
 	#May screw up everthing!!!
 	player_number = 1 - len(partial_state[3]) % 2
 	current_card = partial_state[0]
-	curernt_suit = partial_state[1]
+	current_suit = partial_state[1]
 	current_hand = partial_state[2]
 	current_rank = get_rank(current_card)
 	two_special_case= 0
@@ -56,14 +56,14 @@ def gen_moves(partial_state):
 		if(pos_rank == 8 and two_special_case == 0):
 			eight_suit = 0
 			while eight_suit < 4:
-				move_list.append(player_number, card, eight_suit, 0)
+				move_list.append((player_number, card, eight_suit, 0))
 				eight_suit += 1
 		#Two special case
 		elif(two_special_case == 1 and pos_rank == 2):
-			move_list.append(player_number, card, pos_suit, 0)
+			move_list.append((player_number, card, pos_suit, 0))
 		#checks for same number or suit
 		elif((current_suit == pos_suit or current_rank == pos_rank) and two_special_case == 0):
-			move_list.append(player_number, card, pos_suit, 0)
+			move_list.append((player_number, card, pos_suit, 0))
 	return move_list
 	
 	
@@ -129,8 +129,8 @@ def get_winner(state):
 	history = partial_state[3]
 	
 	# Using this to set the hands appropriately
-	p0_hand = []
-	p1_hand = []
+	p0_hand = set()
+	p1_hand = set()
 	most_recent_move = history[-1]
 	if most_recent_move[0] == 0:
 		p1_hand = partial_state[2]
@@ -171,4 +171,4 @@ class CrazyEight:
 		
 state = gen_initial_state()
 print (state)
-print flip_state(state)
+print gen_moves(state[2])
