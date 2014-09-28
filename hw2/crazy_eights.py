@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import random
 
 player_number = 0
@@ -54,17 +53,10 @@ def is_game_over(state):
 	return
 def get_winner(state):
 	return
->>>>>>> FETCH_HEAD
 
 
 class CrazyEight:
 	def move(self, partial_state):
-<<<<<<< HEAD
-	    return
-	def move_perfect_knowlege(self, state):
-	    return
-=======
 		return
 	def move_perfect_knowlege(self, state):
 		return
->>>>>>> FETCH_HEAD
