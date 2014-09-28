@@ -9,6 +9,15 @@ def get_suit(card_number):
 def get_rank(card_number):
 	return (card_number % 13) + 1
 	
+	
+def flip_state(state):
+	partial_state = state[2]
+	deck = state[0]
+	old_hand = partial_state[2]
+	new_hand = state[1]
+	
+	return (deck, old_hand, (partial_state[0], partial_state[1], new_hand, partial_state[3]))
+	
 def gen_initial_state():
     deck = random.sample(range(52),52)
     p0_hand = []
