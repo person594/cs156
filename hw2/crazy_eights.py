@@ -50,7 +50,7 @@ def gen_moves(partial_state):
 def make_move(move, state, draw_history):
 	if move[0] == 1:
 		#flip state
-	patrial_state = state[2]
+	partial_state = state[2]
 	card_played = move[1]
 	suit = partial_state[1]
 	hand = partial_state[2]
@@ -68,7 +68,10 @@ def make_move(move, state, draw_history):
 		hand -= {card_played}
 		suit = move[2]
 	
-	return (deck, state[1], (card_played, suit, hand, history))
+	end_state = (deck, state[1], (card_played, suit, hand, history))
+	# flip back if needed
+	
+	return return end_state
 	
 def undo_move(state, draw_history):
 	move = state[2][3].pop()
@@ -78,11 +81,21 @@ def undo_move(state, draw_history):
 	hand = partial_state
 	history = partial_state[3]
 	cards_drawn = move[3]
+	deck = state[0]
 	did_play = cards_drawn == 0;
 	while cards_drawn > 0:
 		card = draw_history.pop()
-		
+		hand = hand - {card}
+		deck.append(card)
 		cards_drawn -= 1
+	if did_play:
+		card_played = move[1]
+		hand = hand | {card_played}
+	prior_move = history[-1]
+	top_card = prior_move[1]
+	top_suit = prior_move[2]
+	end_state = (deck, state[1], (top_card, top_suit, hand, history))
+	return
 	
 def is_game_over(state):
 	return
