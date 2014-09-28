@@ -11,8 +11,8 @@ def get_rank(card_number):
 	
 def gen_initial_state():
     deck = random.sample(range(52),52)
-    p0_hand[]
-    p1_hand[]
+    p0_hand = []
+    p1_hand = []
     count = 0
     while (count < 8)
     	p0_hand.append(deck.pop())
@@ -20,28 +20,40 @@ def gen_initial_state():
     	count += 1
     face_up_card = deck.pop()
     initial_move = (1,face_up_card,get_suit(face_up_card),0)
-    initial_partial_state = (face_up_card,get_suit(face_up_card),p0_hand,initial_move)
+    initial_partial_state = (face_up_card,get_suit(face_up_card),p0_hand,[initial_move])
     intiail_state = (deck,p1_hand,initial_partial_state)
 	return initial_state
 
 def gen_moves(partial_state):
     move_list = {}
-    current_card = partial_state[1]
-    curernt_suit = partial_state[2]
-    current_hand = partial_state[3]
+	#May screw up everthing!!!
+	player_number = 1 - len(partial_state[3]) % 2
+    current_card = partial_state[0]
+    curernt_suit = partial_state[1]
+    current_hand = partial_state[2]
 	current_rank = get_rank(current_card)
-	#Searches through hand for 
+	two_special_case= 0
+	if (current_rank == 2):
+		two_special_case = 1
+	if (current_rank == 11):
+		return (player_number, current_card, current_suit, -1)
+	if (current_rank == 12):
+		return (player_number, current_card, current_suit, 5)
+	#Searches through hand for moves
 	for card in current_hand:
 		pos_rank = get_rank(card)
 		pos_suit = get_suit(card)
-		#checks for eights in hand
-		if(pos_rank == 8):
+		#Checks for eights in hand
+		if(pos_rank == 8 and two_special_case == 0):
 			eight_suit = 0
 			while eight_suit < 4:
 				move_list.append(player_number, card, eight_suit, 0)
 				eight_suit += 1
+		#Two special case
+		elif(two_special_case == 1 and pos_rank == 2):
+			move_list.append(player_number, card, pos_suit, 0)
 		#checks for same number or suit
-		elif(current_suit == pos_suit or current_rank == pos_rank):
+		elif((current_suit == pos_suit or current_rank == pos_rank) and two_special_case == 0):
 			move_list.append(player_number, card, pos_suit, 0)
 	return move_list
 	
