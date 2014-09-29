@@ -98,6 +98,7 @@ def gen_moves(partial_state):
 		#checks for same number or suit
 		elif((current_suit == pos_suit or current_rank == pos_rank) and two_special_case == 0):
 			move_list.append((player_number, card, pos_suit, 0))
+	#Adds picked operations based on how many 2s were placed previously
 	if (len(move_list) == 0):
 		if (two_special_case == 1):
 			cards_picked = 2
