@@ -102,7 +102,7 @@ def gen_moves(partial_state):
 		elif((current_suit == pos_suit or current_rank == pos_rank) and two_special_case == 0):
 			move_list.append((player_number, card, pos_suit, 0))
 	#Adds picked operations based on how many 2s were placed previously
-	if (len(move_list) == 0):
+	if move_list == []:
 		if (two_special_case == 1):
 			cards_picked = 2
 			hist_index = -1
@@ -110,10 +110,9 @@ def gen_moves(partial_state):
 			while get_rank(current_history[hist_index][0]) == 2:
 				cards_picked += 2
 				hist_index -= 1
-			while iter < cards_picked:
-				move_list.append(deck.pop)
+				move_list = [(player_number, 0, 0, cards_picked)]
 		else:
-			move_list.append(deck.pop)		
+			move_list = [(player_number, 0, 0, 1)]
 	return move_list
 	
 
@@ -136,7 +135,6 @@ def make_move(move, state, draw_history):
 	if (can_play):
 		hand -= {card_played}
 		suit = move[2]
-		print suit
 	
 	end_state = (deck, state[1], (card_played, suit, hand, history))
 	
@@ -221,7 +219,6 @@ def get_lowest_card_winner(play_one_hand, play_two_hand):
 		current = card
 		if (current < one_min):
 			one_min = card
-			print one_min
 	for card in play_two_hand:
 		current = card
 		if (current < two_min):
