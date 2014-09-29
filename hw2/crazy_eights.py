@@ -24,6 +24,23 @@ def move_string(move):
 	return final_string
 	
 	
+def state_string(state):
+	deck = state[0]
+	their_hand = state[1]
+	partial_state = state[2]
+	our_hand = partial_state[2]
+	
+	out = "Deck:\n";
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, deck)) + "\n"
+	out += "Our Hand:\n"
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, our_hand)) + "\n"
+	out += "Their Hand:\n"
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, their_hand)) + "\n"
+	out += "Top Card: " + card_string(partial_state[0]) + "\n"
+	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
+	out += "Suit: " + suits[partial_state[1]];
+	return out
+
 def flip_state(state):
 	partial_state = state[2]
 	deck = state[0]
@@ -175,7 +192,7 @@ def get_winner(state):
 	elif difference == 0:
 		return get_lowest_card_winner(p0_hand, p1_hand)
 		
-	return - 1
+	return -1
 
 #Finds the player with the lowest card in their hand
 #Returns 0 if player one has lowest, 1 if player two has the lowest
@@ -204,6 +221,7 @@ class CrazyEight:
 		return
 		
 state = gen_initial_state()
-print map(card_string, state[0])
+print state_string(state)
+
 print gen_moves(state[2])
 print move_string((0,20,2,0))
