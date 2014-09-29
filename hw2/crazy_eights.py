@@ -163,6 +163,21 @@ def get_winner(state):
 		
 	return - 1
 
+#Finds the player with the lowest card in their hand
+#Returns 0 if player one has lowest, 1 if player two has the lowest
+def get_lowest_card_winner(play_one_hand, play_two_hand):
+	one_min = 53
+	two_min = 53
+	for card in play_one_hand:
+		current = card
+		if (current < card):
+			one_min = card
+	for card in play_two_hand:
+		current = card
+		if (current < card):
+			two_min = card
+	return (one_min < two_min)
+
 class CrazyEight:
 	def move(self, partial_state):
 		return
