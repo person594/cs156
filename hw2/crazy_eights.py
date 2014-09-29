@@ -72,7 +72,7 @@ def gen_initial_state():
 def gen_moves(partial_state):
 	move_list = []
 	#May screw up everthing!!!
-	player_number = 1 - len(partial_state[3]) % 2
+	player_number = (partial_state[3][0][0] + len(partial_state[3])) % 2 
 	current_card = partial_state[0]
 	current_suit = partial_state[1]
 	current_hand = partial_state[2]
