@@ -248,12 +248,6 @@ def get_player_hands(state):
 def get_heuristic(state):
 	hands = get_player_hands(state)
 	return len(hands[0]) - len(hands[1])
-
-class CrazyEight:
-	def move(self, partial_state):
-		return
-	def move_perfect_knowlege(self, state):
-		return
 		
 # Minmax Algorithm: min
 def ab_min(alpha, beta, state, depth):
@@ -297,4 +291,8 @@ def ab_max(alpha, beta, state, depth):
 			return beta
 	return alpha
 	
-	
+class CrazyEight:
+	def move(self, partial_state):
+		return
+	def move_perfect_knowlege(self, state):
+		return

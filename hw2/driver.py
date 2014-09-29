@@ -10,12 +10,14 @@ game_in_progress = True
 
 while(game_in_progress):
     if player_choice == 0:
-        get_human_move(state)
+        human_move = get_human_move(state)
+        state = make_move(human_move, state, [])
         
         get_comp_move(state)
     if player_choice == 1:
         get_comp_move(state)
-        get_human_move(state)
+        human_move = get_human_move(state)
+        state = make_move(human_move, state, [])
 
 
 
@@ -53,4 +55,19 @@ def get_human_move(state):
 
 
 def get_comp_move(state):
+    partial_state = state[2]
+    moves = gen_moves(partial_state)
+    
+    
+    
+    
     return
+
+
+
+
+
+
+
+
+
