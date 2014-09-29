@@ -1,5 +1,6 @@
-
+import copy
 import random
+import traceback
 
 player_number = 0
 		
@@ -15,6 +16,7 @@ def card_string(card_number):
 	return ranks[get_rank(card_number)] + suits[get_suit(card_number)]
 
 def move_string(move):
+	if move is None: traceback.print_stack()
 	player = move[0]
 	card = move[1]
 	pretty_card = card_string(card)
@@ -36,14 +38,24 @@ def state_string(state):
 	our_hand = partial_state[2]
 	
 	out = "Deck:\n";
-	out += reduce(lambda a, b: a + ", " + b, map(card_string, deck)) + "\n"
+	try:
+		out += reduce(lambda a, b: a + ", " + b, map(card_string, deck)) + "\n"
+	except:
+		out += "<empty>\n"
 	out += "Our Hand:\n"
-	out += reduce(lambda a, b: a + ", " + b, map(card_string, our_hand)) + "\n"
+	try:
+		out += reduce(lambda a, b: a + ", " + b, map(card_string, our_hand)) + "\n"
+	except:
+		out += "<empty>\n"
 	out += "Their Hand:\n"
-	out += reduce(lambda a, b: a + ", " + b, map(card_string, their_hand)) + "\n"
+	try:
+		out += reduce(lambda a, b: a + ", " + b, map(card_string, their_hand)) + "\n"
+	except:
+		out += "<empty>\n"
 	out += "Top Card: " + card_string(partial_state[0]) + "\n"
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
-	out += "Suit: " + suits[partial_state[1]];
+	out += "Suit: " + suits[partial_state[1]] + '\n';
+	out += "History length: " + str(len(partial_state[3]))
 	return out + "\n"
 	
 def partial_state_string(partial_state):
@@ -53,9 +65,15 @@ def partial_state_string(partial_state):
 	out = ""
 	out += "Top Card: " + card_string(face_up_card) + "\n"
 	out += "Your Hand:\n"
-	out += reduce(lambda a, b: a + ", " + b, map(card_string, hand)) + "\n"
+	try:
+		out += reduce(lambda a, b: a + ", " + b, map(card_string, hand)) + "\n"
+	except:
+		out += "<empty\n"
 	out += "Move History:\n"
-	out += reduce(lambda a, b: a + ", " + b, map(move_string, history)) + "\n"
+	try:
+		out += reduce(lambda a, b: a + ", " + b, map(move_string, history)) + "\n"
+	except:
+		out += "<empty>"
 	return out + "\n"
 	#comment to show a change
 
@@ -91,15 +109,14 @@ def gen_moves(partial_state):
 	current_hand = partial_state[2]
 	current_history = partial_state[3]
 	current_rank = get_rank(current_card)
-	two_special_case= 0
-	"""No special cases if it is the first play"""
-	if len(partial_state[3]) > 1:
-		if (current_rank == 2):
-			two_special_case = 1
-		if (current_rank == 11):
-			return [(player_number, current_card, current_suit, -1)]
-		if (current_rank == 12 and current_suit == 0):
-			return [(player_number, current_card, current_suit, 5)]
+	two_special_case = 0
+
+	if (current_rank == 2):
+		two_special_case = 1
+	if (current_rank == 11 and current_history[-1][3] != -1):
+		return [(player_number, current_card, current_suit, -1)]
+	if (current_rank == 12 and current_suit == 0):
+		return [(player_number, current_card, current_suit, 5)]
 	#Searches through hand for moves
 	for card in current_hand:
 		pos_rank = get_rank(card)
@@ -121,7 +138,7 @@ def gen_moves(partial_state):
 		cards_picked = 2
 		hist_index = -1
 		iter = 0
-		while -hist_index < len(current_history) and get_rank(current_history[hist_index][0]) == 2:
+		while -hist_index-1 < len(current_history) and get_rank(current_history[hist_index][0]) == 2:
 			cards_picked += 2
 			hist_index -= 1
 			move_list.append((player_number, 0, 0, cards_picked))
@@ -145,11 +162,11 @@ def make_move(move, state, draw_history):
 	history = partial_state[3]
 	history.append(move)
 	if (can_play):
+		assert card_played in hand
 		hand -= {card_played}
 		suit = move[2]
-	
+		
 	end_state = (deck, state[1], (card_played, suit, hand, history))
-	
 	return flip_state(end_state)
 	
 def undo_move(state, draw_history):
@@ -264,11 +281,12 @@ def ab_min(alpha, beta, state, depth):
 	possible_moves = gen_moves(state[2])
 	for move in possible_moves:
 		draw_history = []
-		new_state = make_move(move, state, draw_history)
+		new_state = copy.deepcopy(state)
+		new_state = make_move(move, new_state, draw_history)
 		beta = min(beta, ab_max(alpha, beta, new_state, depth - 1))
-		state = undo_move(new_state, draw_history)
+		#state = undo_move(state, draw_history)
 		if beta < alpha:
-			return alpha
+			return beta
 	return beta
 
 # Minmax Algorithm: max
@@ -285,11 +303,12 @@ def ab_max(alpha, beta, state, depth):
 	possible_moves = gen_moves(state[2])
 	for move in possible_moves:
 		draw_history = []
-		new_state = make_move(move, state, draw_history)
-		beta = min(alpha, ab_min(alpha, beta, new_state, depth - 1))
-		state = undo_move(new_state, draw_history)
-		if beta > alpha:
-			return beta
+		new_state = copy.deepcopy(state)
+		new_state = make_move(move, new_state, draw_history)
+		alpha = max(alpha, ab_min(alpha, beta, new_state, depth - 1))
+		#state = undo_move(state, draw_history)
+		if alpha > beta:
+			return alpha
 	return alpha
 
 
@@ -299,22 +318,24 @@ class CrazyEight:
 	def move_perfect_knowlege(self, state):
 		current_player = state[2][3][-1][0]
 		moves = gen_moves(state[2])
+		assert len(moves) > 0
 		draw_history = []
 		bestMove = None
 		bestScore = 0;
 		for move in moves:
 			state = make_move(move, state, draw_history)
 			if current_player == 0:
-				score = ab_max(-float('inf'), float('inf'), state, 13)
-				if score < bestScore or move is None:
+				score = ab_max(-float('inf'), float('inf'), state, 6)
+				if score < bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
 			else:
-				score = ab_min(-float('inf'), float('inf'), state, 13)
-				if score > bestScore or move is None:
+				score = ab_min(-float('inf'), float('inf'), state, 6)
+				if score > bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
 			state = undo_move(state, draw_history)
+		assert not bestMove is None
 		return bestMove
 	
 	
