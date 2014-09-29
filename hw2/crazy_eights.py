@@ -45,6 +45,19 @@ def state_string(state):
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
 	out += "Suit: " + suits[partial_state[1]];
 	return out + "\n"
+	
+def partial_state_string(partial_state):
+	face_up_card = partial_state[0]
+	hand = partial_state[2]
+	history = partial_state[3]
+	out = ""
+	out += "Top Card: " + card_string(face_up_card) + "\n"
+	out += "Your Hand:\n"
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, hand)) + "\n"
+	out += "Move History:\n"
+	out += recuce(lambda a, b: a + ", " + b, map(moves_string, history)) + "\n"
+	return out + "\n"
+	#comment to show a change
 
 def flip_state(state):
 	partial_state = state[2]
