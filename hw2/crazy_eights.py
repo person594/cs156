@@ -108,7 +108,7 @@ def gen_moves(partial_state):
 		cards_picked = 2
 		hist_index = -1
 		iter = 0
-		while get_rank(current_history[hist_index][0]) == 2:
+		while -hist_index < len(current_history) and get_rank(current_history[hist_index][0]) == 2:
 			cards_picked += 2
 			hist_index -= 1
 			move_list.append((player_number, 0, 0, cards_picked))
