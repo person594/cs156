@@ -74,6 +74,7 @@ def gen_moves(partial_state):
 	current_card = partial_state[0]
 	current_suit = partial_state[1]
 	current_hand = partial_state[2]
+	current_history = partial_state[3]
 	current_rank = get_rank(current_card)
 	two_special_case= 0
 	"""No special cases if it is the first play"""
@@ -100,6 +101,19 @@ def gen_moves(partial_state):
 		#checks for same number or suit
 		elif((current_suit == pos_suit or current_rank == pos_rank) and two_special_case == 0):
 			move_list.append((player_number, card, pos_suit, 0))
+	#Adds picked operations based on how many 2s were placed previously
+	if (len(move_list) == 0):
+		if (two_special_case == 1):
+			cards_picked = 2
+			hist_index = -1
+			iter = 0
+			while get_rank(current_history[hist_index][0]) == 2:
+				cards_picked += 2
+				hist_index -= 1
+			while iter < cards_picked:
+				move_list.append(deck.pop)
+		else:
+			move_list.append(deck.pop)		
 	return move_list
 	
 
