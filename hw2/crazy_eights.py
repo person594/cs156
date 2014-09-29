@@ -22,11 +22,11 @@ def move_string(move):
 	
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
 	if card_picked == 0:
-		return "Player "+ str(player) + " played " + pretty_card +", Suit is now " + suits[move[2]] + "\n"
+		return "Player "+ str(player) + " plays " + pretty_card +", Suit is now " + suits[move[2]] + "\n"
 	elif card_picked == -1:
 		return "Player "+ str(player) + "'s turn is skipped\n"
 	else:
-		return "Player "+ str(player) + "picked up " + str(card_picked) + " cards\n"
+		return "Player "+ str(player) + " picks up " + str(card_picked) + " cards\n"
 	
 	
 def state_string(state):
@@ -55,7 +55,7 @@ def partial_state_string(partial_state):
 	out += "Your Hand:\n"
 	out += reduce(lambda a, b: a + ", " + b, map(card_string, hand)) + "\n"
 	out += "Move History:\n"
-	out += recuce(lambda a, b: a + ", " + b, map(moves_string, history)) + "\n"
+	out += reduce(lambda a, b: a + ", " + b, map(move_string, history)) + "\n"
 	return out + "\n"
 	#comment to show a change
 

@@ -10,18 +10,19 @@ def get_human_move(state):
     for moves in possible_moves:
         move_to_print = ""
         move_to_print += "Move " + str(counter) + "\n"
-        move_to_print = crazy_eights.move_string(moves)
+        move_to_print += crazy_eights.move_string(moves)
         counter += 1
+        print move_to_print
     
-    player_move_choice = input('Please select a move')
-    player_move = possible_moves(player_move_choice - 1)
+    player_move_choice = input('Please select a move: ')
+    player_move = possible_moves[player_move_choice - 1]
     return player_move
 
 
 def get_comp_move(state):
     partial_state = state[2]
-    moves = gen_moves(partial_state)
-    craz8 = CrazyEight()
+    moves = crazy_eights.gen_moves(partial_state)
+    craz8 = crazy_eights.CrazyEight()
     return craz8.move_perfect_knowlege(state)
 
 
@@ -40,9 +41,9 @@ while(game_in_progress):
 			move = get_human_move(state)
 		else:
 			move = get_comp_move(state)
-			print move_string(move)
-		state = make_move(move, state, [])
-		game_in_progress = not is_game_over(state)
+			print crazy_eights.move_string(move)
+		state = crazy_eights.make_move(move, state, [])
+		game_in_progress = not crazy_eights.is_game_over(state)
 		to_move = 1 - to_move
 
 
