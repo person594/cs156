@@ -9,6 +9,10 @@ def get_suit(card_number):
 def get_rank(card_number):
 	return (card_number % 13) + 1
 	
+def card_string(card_number):
+	suits = ['S', 'H', 'D', 'C']
+	ranks = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K']
+	return ranks[get_rank(card_number)] + suits[get_suit(card_number)]
 	
 def flip_state(state):
 	partial_state = state[2]
@@ -190,5 +194,6 @@ class CrazyEight:
 		return
 		
 state = gen_initial_state()
-print (state)
+print map(card_string, state[0])
+
 print gen_moves(state[2])
