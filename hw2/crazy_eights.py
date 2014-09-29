@@ -223,6 +223,8 @@ def get_lowest_card_winner(play_one_hand, play_two_hand):
 	
 #Always returns player 0's hand and player 1's hand
 def get_player_hands(state)
+	partial_state = state[2]
+	history = partial_state[3]
 	most_recent_move = history[-1]
 	if most_recent_move[0] == 0:
 		return (state[1], partial_state[2])	
