@@ -45,6 +45,18 @@ def state_string(state):
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
 	out += "Suit: " + suits[partial_state[1]];
 	return out + "\n"
+	
+def partial_state_string(partial_state):
+	face_up_card = partial_state[0]
+	hand = partial_state[2]
+	history = partial_state[3]
+	out = ""
+	out += "Top Card: " + card_string(face_up_card) + "\n"
+	out += "Your Hand:\n"
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, hand)) + "\n"
+	out += "Move History:\n"
+	out += recuce(lambda a, b: a + ", " + b, map(moves_string, history)) + "\n"
+	return out + "\n"
 
 def flip_state(state):
 	partial_state = state[2]
@@ -284,21 +296,5 @@ def ab_max(alpha, beta, state, depth):
 		if beta > alpha:
 			return beta
 	return alpha
-
-state = gen_initial_state()
-print state_string(state)
-
-moves = gen_moves(state[2])
-draw_history = []
-bestMove = None
-bestScore = 0;
-for move in moves:
-	state = make_move(move, state, draw_history)
-	score = ab_max(-999999999999, 99999999999, state, 13)
-	if score < bestScore or move is None:
-		bestScore = score
-		bestMove = move
-print move_string(bestMove)
-	
 	
 	
