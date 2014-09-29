@@ -1,23 +1,49 @@
-# import crazy_eights
+import crazy_eights
+
+
+
+def get_human_move(state):
+    partial_state = state[2]
+    possible_moves = crazy_eights.gen_moves(partial_state)
+    
+    counter = 1
+    for moves in possible_moves:
+        move_to_print = ""
+        move_to_print += "Move " + str(counter) + "\n"
+        move_to_print = crazy_eights.move_string(moves)
+        counter += 1
+    
+    player_move_choice = input('Please select a move')
+    player_move = possible_moves(player_move_choice - 1)
+    return player_move
+
+
+def get_comp_move(state):
+    partial_state = state[2]
+    moves = gen_moves(partial_state)
+    craz8 = CrazyEight()
+    return craz8.move_perfect_knowlege(state)
+
+
+
 
 player_choice = input('Would you like to be player 0 or 1? (enter 0 or 1) ')
-
-print(player_choice)
-
-state = gen_initial_state()
+state = crazy_eights.gen_initial_state()
 #print state_string(state)
 game_in_progress = True
 
+to_move = 0
+
 while(game_in_progress):
-    if player_choice == 0:
-        human_move = get_human_move(state)
-        state = make_move(human_move, state, [])
-        
-        get_comp_move(state)
-    if player_choice == 1:
-        get_comp_move(state)
-        human_move = get_human_move(state)
-        state = make_move(human_move, state, [])
+		print crazy_eights.partial_state_string(state[2])
+		if player_choice == to_move:
+			move = get_human_move(state)
+		else:
+			move = get_comp_move(state)
+			print move_string(move)
+		state = make_move(move, state, [])
+		game_in_progress = not is_game_over(state)
+		to_move = 1 - to_move
 
 
 
@@ -34,38 +60,6 @@ for move in moves:
 		bestScore = score
 		bestMove = move
 print move_string(bestMove)
-
-
-
-def get_human_move(state):
-    partial_state = state[2]
-    partial_state_string(partial_state)
-    possible_moves = gen_moves(partial_state)
-    
-    counter = 1
-    for moves in possible_moves:
-        move_to_print = ""
-        move_to_print += "Move " + str(counter) + "\n"
-        move_to_print = move_string(moves)
-        counter += 1
-    
-    player_move_choice = input('Please select a move')
-    player_move = possible_moves(player_move_choice - 1)
-    return player_move
-
-
-def get_comp_move(state):
-    partial_state = state[2]
-    moves = gen_moves(partial_state)
-    
-    
-    
-    
-    return
-
-
-
-
 
 
 
