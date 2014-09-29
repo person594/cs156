@@ -242,6 +242,34 @@ class CrazyEight:
 	def move_perfect_knowlege(self, state):
 		return
 		
+# Minmax Algorithm: min
+def ab_min(alpha, beta, state, depth):
+	if depth == 0:
+		return get_heuristic(state)
+	possible_moves = gen_moves(state[2])
+	for move in possible_moves:
+		draw_history = []
+		new_state = make_move(move, state, draw_history)
+		beta = min(beta, ab_max(alpha, beta, new_state, depth - 1)
+		undo_move(new_state, draw_history)
+		if beta < alpha
+			return alpha
+	return beta
+
+# Minmax Algorithm: max
+def ab_max(alpha, beta, state, depth):
+	if depth == 0:
+		return get_heuristic(state)
+	possible_moves = gen_moves(state[2])
+	for move in possible_moves:
+		draw_history = []
+		new_state = make_move(move, state, draw_history)
+		beta = min(alpha, ab_min(alpha, beta, new_state, depth - 1)
+		undo_move(new_state, draw_history)
+		if beta > alpha
+			return beta
+	return alpha
+
 state = gen_initial_state()
 print state_string(state)
 
