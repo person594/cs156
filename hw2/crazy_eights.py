@@ -232,9 +232,9 @@ def get_player_hands(state):
 	return (partial_state[2], state[1])
 
 #Determine the heuristic for choosing wich move to do.
-def get_heuristic(state)
+def get_heuristic(state):
 	hands = get_player_hands(state)
-	return hands[0] - hands[1]
+	return len(hands[0]) - len(hands[1])
 
 class CrazyEight:
 	def move(self, partial_state):
@@ -250,9 +250,9 @@ def ab_min(alpha, beta, state, depth):
 	for move in possible_moves:
 		draw_history = []
 		new_state = make_move(move, state, draw_history)
-		beta = min(beta, ab_max(alpha, beta, new_state, depth - 1)
-		undo_move(new_state, draw_history)
-		if beta < alpha
+		beta = min(beta, ab_max(alpha, beta, new_state, depth - 1))
+		state = undo_move(new_state, draw_history)
+		if beta < alpha:
 			return alpha
 	return beta
 
@@ -264,9 +264,9 @@ def ab_max(alpha, beta, state, depth):
 	for move in possible_moves:
 		draw_history = []
 		new_state = make_move(move, state, draw_history)
-		beta = min(alpha, ab_min(alpha, beta, new_state, depth - 1)
-		undo_move(new_state, draw_history)
-		if beta > alpha
+		beta = min(alpha, ab_min(alpha, beta, new_state, depth - 1))
+		state = undo_move(new_state, draw_history)
+		if beta > alpha:
 			return beta
 	return alpha
 
@@ -275,8 +275,15 @@ print state_string(state)
 
 moves = gen_moves(state[2])
 draw_history = []
+bestMove = None
+bestScore = 0;
 for move in moves:
-	print move_string(move)
 	state = make_move(move, state, draw_history)
-	print state_string(state)
-	state = undo_move(state, draw_history)
+	score = ab_max(-999999999999, 99999999999, state, 13)
+	if score < bestScore or move is None:
+		bestScore = score
+		bestMove = move
+print move_string(bestMove)
+	
+	
+	
