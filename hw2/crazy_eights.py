@@ -13,7 +13,37 @@ def card_string(card_number):
 	suits = ['S', 'H', 'D', 'C']
 	ranks = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K']
 	return ranks[get_rank(card_number)] + suits[get_suit(card_number)]
+
+def move_string(move):
+	player = move[0]
+	card = move[1]
+	pretty_card = card_string(card)
+	card_picked = move[3]
 	
+	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
+	
+	final_string = "Player "+ str(player) + " played " + pretty_card + " and picked up " + str(card_picked) + " cards \n"
+	final_string += "Suit is now " + suits[move[2]] + "\n"
+	return final_string
+	
+	
+def state_string(state):
+	deck = state[0]
+	their_hand = state[1]
+	partial_state = state[2]
+	our_hand = partial_state[2]
+	
+	out = "Deck:\n";
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, deck)) + "\n"
+	out += "Our Hand:\n"
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, our_hand)) + "\n"
+	out += "Their Hand:\n"
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, their_hand)) + "\n"
+	out += "Top Card: " + card_string(partial_state[0]) + "\n"
+	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
+	out += "Suit: " + suits[partial_state[1]];
+	return out + "\n"
+
 def flip_state(state):
 	partial_state = state[2]
 	deck = state[0]
@@ -44,14 +74,17 @@ def gen_moves(partial_state):
 	current_card = partial_state[0]
 	current_suit = partial_state[1]
 	current_hand = partial_state[2]
+	current_history = partial_state[3]
 	current_rank = get_rank(current_card)
 	two_special_case= 0
-	if (current_rank == 2):
-		two_special_case = 1
-	if (current_rank == 11):
-		return [(player_number, current_card, current_suit, -1)]
-	if (current_rank == 12):
-		return [(player_number, current_card, current_suit, 5)]
+	"""No special cases if it is the first play"""
+	if len(partial_state[3]) > 1:
+		if (current_rank == 2):
+			two_special_case = 1
+		if (current_rank == 11):
+			return [(player_number, current_card, current_suit, -1)]
+		if (current_rank == 12 and current_suit == 0):
+			return [(player_number, current_card, current_suit, 5)]
 	#Searches through hand for moves
 	for card in current_hand:
 		pos_rank = get_rank(card)
@@ -68,11 +101,22 @@ def gen_moves(partial_state):
 		#checks for same number or suit
 		elif((current_suit == pos_suit or current_rank == pos_rank) and two_special_case == 0):
 			move_list.append((player_number, card, pos_suit, 0))
+	#Adds picked operations based on how many 2s were placed previously
+	if (len(move_list) == 0):
+		if (two_special_case == 1):
+			cards_picked = 2
+			hist_index = -1
+			iter = 0
+			while get_rank(current_history[hist_index][0]) == 2:
+				cards_picked += 2
+				hist_index -= 1
+			while iter < cards_picked:
+				move_list.append(deck.pop)
+		else:
+			move_list.append(deck.pop)		
 	return move_list
 
 def make_move(move, state, draw_history):
-	#if move[0] == 1:
-		#flip state
 	partial_state = state[2]
 	card_played = move[1]
 	suit = partial_state[1]
@@ -90,18 +134,19 @@ def make_move(move, state, draw_history):
 	if (can_play):
 		hand -= {card_played}
 		suit = move[2]
+		print suit
 	
 	end_state = (deck, state[1], (card_played, suit, hand, history))
-	# flip back if needed
 	
-	return end_state
+	return flip_state(end_state)
 	
 def undo_move(state, draw_history):
+	state = flip_state(state)
 	move = state[2][3].pop()
 	#if (move[0] == 1):
 		#flip state
 	partial_state = state[2]
-	hand = partial_state
+	hand = partial_state[2]
 	history = partial_state[3]
 	cards_drawn = move[3]
 	deck = state[0]
@@ -118,7 +163,7 @@ def undo_move(state, draw_history):
 	top_card = prior_move[1]
 	top_suit = prior_move[2]
 	end_state = (deck, state[1], (top_card, top_suit, hand, history))
-	return
+	return end_state
 	
 def is_game_over(state):
 	partial_state = state[2]
@@ -194,6 +239,12 @@ class CrazyEight:
 		return
 		
 state = gen_initial_state()
-print map(card_string, state[0])
+print state_string(state)
 
-print gen_moves(state[2])
+moves = gen_moves(state[2])
+draw_history = []
+for move in moves:
+	print move_string(move)
+	state = make_move(move, state, draw_history)
+	print state_string(state)
+	state = undo_move(state, draw_history)
