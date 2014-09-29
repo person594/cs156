@@ -21,10 +21,12 @@ def move_string(move):
 	card_picked = move[3]
 	
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
-	
-	final_string = "Player "+ str(player) + " played " + pretty_card + " and picked up " + str(card_picked) + " cards \n"
-	final_string += "Suit is now " + suits[move[2]] + "\n"
-	return final_string
+	if card_picked == 0:
+		return "Player "+ str(player) + " played " + pretty_card +", Suit is now " + suits[move[2]] + "\n"
+	elif card_picked == -1:
+		return "Player "+ str(player) + "'s turn is skipped\n"
+	else:
+		return "Player "+ str(player) + "picked up " + str(card_picked) + " cards\n"
 	
 	
 def state_string(state):
@@ -102,17 +104,16 @@ def gen_moves(partial_state):
 		elif((current_suit == pos_suit or current_rank == pos_rank) and two_special_case == 0):
 			move_list.append((player_number, card, pos_suit, 0))
 	#Adds picked operations based on how many 2s were placed previously
-	if move_list == []:
-		if (two_special_case == 1):
-			cards_picked = 2
-			hist_index = -1
-			iter = 0
-			while get_rank(current_history[hist_index][0]) == 2:
-				cards_picked += 2
-				hist_index -= 1
-				move_list = [(player_number, 0, 0, cards_picked)]
-		else:
-			move_list = [(player_number, 0, 0, 1)]
+	if (two_special_case == 1):
+		cards_picked = 2
+		hist_index = -1
+		iter = 0
+		while get_rank(current_history[hist_index][0]) == 2:
+			cards_picked += 2
+			hist_index -= 1
+			move_list.append((player_number, 0, 0, cards_picked))
+	else:
+		move_list.append((player_number, 0, 0, 1))
 	return move_list
 
 def make_move(move, state, draw_history):
@@ -222,7 +223,7 @@ def get_lowest_card_winner(play_one_hand, play_two_hand):
 	return winner
 	
 #Always returns player 0's hand and player 1's hand
-def get_player_hands(state)
+def get_player_hands(state):
 	partial_state = state[2]
 	history = partial_state[3]
 	most_recent_move = history[-1]
