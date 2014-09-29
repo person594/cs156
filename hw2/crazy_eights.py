@@ -14,6 +14,23 @@ def card_string(card_number):
 	ranks = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K']
 	return ranks[get_rank(card_number)] + suits[get_suit(card_number)]
 	
+def state_string(state):
+	deck = state[0]
+	their_hand = state[1]
+	partial_state = state[2]
+	our_hand = partial_state[2]
+	
+	out = "Deck:\n";
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, deck)) + "\n"
+	out += "Our Hand:\n"
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, our_hand)) + "\n"
+	out += "Their Hand:\n"
+	out += reduce(lambda a, b: a + ", " + b, map(card_string, their_hand)) + "\n"
+	out += "Top Card: " + card_string(partial_state[0]) + "\n"
+	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
+	out += "Suit: " + suits[partial_state[1]];
+	return out
+
 def flip_state(state):
 	partial_state = state[2]
 	deck = state[0]
@@ -194,6 +211,6 @@ class CrazyEight:
 		return
 		
 state = gen_initial_state()
-print map(card_string, state[0])
+print state_string(state)
 
 print gen_moves(state[2])
