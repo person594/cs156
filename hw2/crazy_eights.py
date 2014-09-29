@@ -73,12 +73,14 @@ def gen_moves(partial_state):
 	current_hand = partial_state[2]
 	current_rank = get_rank(current_card)
 	two_special_case= 0
-	if (current_rank == 2):
-		two_special_case = 1
-	if (current_rank == 11):
-		return [(player_number, current_card, current_suit, -1)]
-	if (current_rank == 12):
-		return [(player_number, current_card, current_suit, 5)]
+	"""No special cases if it is the first play"""
+	if len(partial_state[3]) > 1:
+		if (current_rank == 2):
+			two_special_case = 1
+		if (current_rank == 11):
+			return [(player_number, current_card, current_suit, -1)]
+		if (current_rank == 12 and current_suit == 0):
+			return [(player_number, current_card, current_suit, 5)]
 	#Searches through hand for moves
 	for card in current_hand:
 		pos_rank = get_rank(card)
@@ -223,5 +225,6 @@ class CrazyEight:
 state = gen_initial_state()
 print state_string(state)
 
-print gen_moves(state[2])
-print move_string((0,20,2,0))
+moves = gen_moves(state[2])
+for move in moves:
+	print move_string(move)
