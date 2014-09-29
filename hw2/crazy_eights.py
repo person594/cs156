@@ -114,8 +114,6 @@ def gen_moves(partial_state):
 		else:
 			move_list = [(player_number, 0, 0, 1)]
 	return move_list
-	
-
 
 def make_move(move, state, draw_history):
 	partial_state = state[2]
@@ -176,15 +174,9 @@ def get_winner(state):
 	history = partial_state[3]
 	
 	# Using this to set the hands appropriately
-	p0_hand = set()
-	p1_hand = set()
-	most_recent_move = history[-1]
-	if most_recent_move[0] == 0:
-		p1_hand = partial_state[2]
-		p0_hand = state[1]
-	elif most_recent_move[0] == 1:
-		p1_hand = state[1]
-		p0_hand = partial_state[2]
+	player_hands = get_player_hands(state)
+	p0_hand = player_hands[0]
+	p1_hand = player_hands[1]
 		
 	# if player 1's hand size is 0
 	if p1_hand.len == 0:
@@ -228,6 +220,14 @@ def get_lowest_card_winner(play_one_hand, play_two_hand):
 	else:
 		winner = 1
 	return winner
+	
+#Always returns player 0's hand and player 1's hand
+def get_player_hands(state)
+	most_recent_move = history[-1]
+	if most_recent_move[0] == 0:
+		return (state[1], partial_state[2])	
+	return (partial_state[2], state[1])
+	
 
 class CrazyEight:
 	def move(self, partial_state):
