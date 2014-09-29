@@ -165,7 +165,7 @@ def get_winner(state):
 	elif difference == 0:
 		return get_lowest_card_winner(p0_hand, p1_hand)
 		
-	return - 1
+	return -1
 
 #Finds the player with the lowest card in their hand
 #Returns 0 if player one has lowest, 1 if player two has the lowest
