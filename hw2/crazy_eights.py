@@ -45,9 +45,9 @@ def gen_moves(partial_state):
 	if (current_rank == 2):
 		two_special_case = 1
 	if (current_rank == 11):
-		return (player_number, current_card, current_suit, -1)
+		return [(player_number, current_card, current_suit, -1)]
 	if (current_rank == 12):
-		return (player_number, current_card, current_suit, 5)
+		return [(player_number, current_card, current_suit, 5)]
 	#Searches through hand for moves
 	for card in current_hand:
 		pos_rank = get_rank(card)
