@@ -57,6 +57,7 @@ def partial_state_string(partial_state):
 	out += "Move History:\n"
 	out += recuce(lambda a, b: a + ", " + b, map(moves_string, history)) + "\n"
 	return out + "\n"
+	#comment to show a change
 
 def flip_state(state):
 	partial_state = state[2]
