@@ -20,7 +20,10 @@ def move_string(move):
 	pretty_card = card_string(card)
 	card_picked = move[3]
 	
+	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
+	
 	final_string = "Player "+ str(player) + " played " + pretty_card + " and picked up " + str(card_picked) + " cards \n"
+	final_string += "Suit is now " + suits[move[2]] + "\n"
 	return final_string
 	
 	
@@ -39,7 +42,7 @@ def state_string(state):
 	out += "Top Card: " + card_string(partial_state[0]) + "\n"
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
 	out += "Suit: " + suits[partial_state[1]];
-	return out
+	return out + "\n"
 
 def flip_state(state):
 	partial_state = state[2]
@@ -99,11 +102,9 @@ def gen_moves(partial_state):
 			move_list.append((player_number, card, pos_suit, 0))
 	return move_list
 	
-	
+
 
 def make_move(move, state, draw_history):
-	#if move[0] == 1:
-		#flip state
 	partial_state = state[2]
 	card_played = move[1]
 	suit = partial_state[1]
@@ -121,18 +122,19 @@ def make_move(move, state, draw_history):
 	if (can_play):
 		hand -= {card_played}
 		suit = move[2]
+		print suit
 	
 	end_state = (deck, state[1], (card_played, suit, hand, history))
-	# flip back if needed
 	
-	return end_state
+	return flip_state(end_state)
 	
 def undo_move(state, draw_history):
+	state = flip_state(state)
 	move = state[2][3].pop()
 	#if (move[0] == 1):
 		#flip state
 	partial_state = state[2]
-	hand = partial_state
+	hand = partial_state[2]
 	history = partial_state[3]
 	cards_drawn = move[3]
 	deck = state[0]
@@ -149,7 +151,7 @@ def undo_move(state, draw_history):
 	top_card = prior_move[1]
 	top_suit = prior_move[2]
 	end_state = (deck, state[1], (top_card, top_suit, hand, history))
-	return
+	return end_state
 	
 def is_game_over(state):
 	partial_state = state[2]
@@ -226,5 +228,9 @@ state = gen_initial_state()
 print state_string(state)
 
 moves = gen_moves(state[2])
+draw_history = []
 for move in moves:
 	print move_string(move)
+	state = make_move(move, state, draw_history)
+	print state_string(state)
+	state = undo_move(state, draw_history)
