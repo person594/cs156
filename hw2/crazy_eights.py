@@ -230,7 +230,11 @@ def get_player_hands(state):
 	if most_recent_move[0] == 0:
 		return (state[1], partial_state[2])	
 	return (partial_state[2], state[1])
-	
+
+#Determine the heuristic for choosing wich move to do.
+def get_heuristic(state)
+	hands = get_player_hands(state)
+	return hands[0] - hands[1]
 
 class CrazyEight:
 	def move(self, partial_state):
