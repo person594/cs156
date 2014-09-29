@@ -124,7 +124,7 @@ def make_move(move, state, draw_history):
 	cards_drawn = move[3]
 	can_play = cards_drawn == 0
 	deck = state[0]
-	while cards_drawn > 0:
+	while cards_drawn > 0 and deck != []:
 		card = deck.pop()
 		hand |= {card}
 		draw_history.append(card)
@@ -150,7 +150,7 @@ def undo_move(state, draw_history):
 	cards_drawn = move[3]
 	deck = state[0]
 	did_play = cards_drawn == 0;
-	while cards_drawn > 0:
+	while cards_drawn > 0 and draw_history != []:
 		card = draw_history.pop()
 		hand = hand - {card}
 		deck.append(card)
@@ -166,9 +166,9 @@ def undo_move(state, draw_history):
 	
 def is_game_over(state):
 	partial_state = state[2]
-	if state[0].len == 0 or state[1].len == 0 or partial_state[2] == 0:
-		return true
-	return false
+	if len(state[0]) == 0 or len(state[1]) == 0 or partial_state[2] == 0:
+		return True
+	return False
 	
 def get_winner(state):
 	partial_state = state[2]
@@ -180,14 +180,14 @@ def get_winner(state):
 	p1_hand = player_hands[1]
 		
 	# if player 1's hand size is 0
-	if p1_hand.len == 0:
+	if len(p1_hand) == 0:
 		return 1
 		
 	# if player 0's hand size is 0	
-	if p0_hand.len == 0:
+	if len(p0_hand) == 0:
 		return 0
 	
-	difference = p0_hand.len - p1_hand.len
+	difference = len(p0_hand) - len(p1_hand)
 	
 	# If player 0's hand is smaller than player 1's hand
 	if difference < 0:
@@ -232,6 +232,7 @@ def get_player_hands(state):
 	return (partial_state[2], state[1])
 
 #Determine the heuristic for choosing wich move to do.
+#player 0 wants low numbers, player 1 wants high numbers
 def get_heuristic(state):
 	hands = get_player_hands(state)
 	return len(hands[0]) - len(hands[1])
@@ -244,6 +245,13 @@ class CrazyEight:
 		
 # Minmax Algorithm: min
 def ab_min(alpha, beta, state, depth):
+	if is_game_over(state):
+		winner = get_winner(state)
+		if winner == 0:
+			return -float('inf')
+		else:
+			return float('inf')
+	
 	if depth == 0:
 		return get_heuristic(state)
 	possible_moves = gen_moves(state[2])
@@ -258,6 +266,13 @@ def ab_min(alpha, beta, state, depth):
 
 # Minmax Algorithm: max
 def ab_max(alpha, beta, state, depth):
+	if is_game_over(state):
+		winner = get_winner(state)
+		if winner == 0:
+			return -float('inf')
+		else:
+			return float('inf')
+	
 	if depth == 0:
 		return get_heuristic(state)
 	possible_moves = gen_moves(state[2])
