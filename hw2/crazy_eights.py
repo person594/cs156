@@ -163,14 +163,14 @@ def make_move(move, state, draw_history):
 	card_played = move[1]
 	while cards_drawn > 0 and deck != []:
 		card = deck.pop()
-		hand |= {card}
+		hand.add(card)
 		draw_history.append(card)
 		cards_drawn -= 1
 	history = partial_state[3]
 	history.append(move)
 	if (can_play):
 		assert card_played in hand
-		hand -= {card_played}
+		hand.remove(card_played)
 		new_top_card = card_played
 		suit = move[2]
 		
@@ -179,23 +179,23 @@ def make_move(move, state, draw_history):
 	
 def undo_move(state, draw_history):
 	state = flip_state(state)
-	move = state[2][3].pop()
 	#if (move[0] == 1):
 		#flip state
 	partial_state = state[2]
 	hand = partial_state[2]
 	history = partial_state[3]
+	move = history.pop()
 	cards_drawn = move[3]
 	deck = state[0]
 	did_play = cards_drawn == 0;
 	while cards_drawn > 0 and draw_history != []:
 		card = draw_history.pop()
-		hand = hand - {card}
+		hand .remove(card)
 		deck.append(card)
 		cards_drawn -= 1
 	if did_play:
 		card_played = move[1]
-		hand = hand | {card_played}
+		hand.add(card_played)
 	prior_move = history[-1]
 	top_card = prior_move[1]
 	top_suit = prior_move[2]
@@ -273,7 +273,7 @@ def get_player_hands(state):
 #player 0 wants low numbers, player 1 wants high numbers
 def get_heuristic(state):
 	hands = get_player_hands(state)
-	return len(hands[0]) - len(hands[1])
+	return (len(hands[0]) - len(hands[1])) / (len(hands[0]) + len(hands[1]))
 		
 # Minmax Algorithm: min
 def ab_min(alpha, beta, state, depth):
@@ -289,9 +289,13 @@ def ab_min(alpha, beta, state, depth):
 	possible_moves = gen_moves(state[2])
 	for move in possible_moves:
 		draw_history = []
-		new_state = copy.deepcopy(state)
-		new_state = make_move(move, new_state, draw_history)
-		beta = min(beta, ab_max(alpha, beta, new_state, depth - 1))
+		state = make_move(move, state, draw_history)
+		beta = min(beta, ab_max(alpha, beta, state, depth - 1))
+		state = undo_move(state, draw_history)
+		
+		#new_state = copy.deepcopy(state)
+		#new_state = make_move(move, new_state, draw_history)
+		#beta = min(beta, ab_max(alpha, beta, new_state, depth - 1))
 		#state = undo_move(state, draw_history)
 		if beta <= alpha:
 			return alpha
@@ -311,9 +315,13 @@ def ab_max(alpha, beta, state, depth):
 	possible_moves = gen_moves(state[2])
 	for move in possible_moves:
 		draw_history = []
-		new_state = copy.deepcopy(state)
-		new_state = make_move(move, new_state, draw_history)
-		alpha = max(alpha, ab_min(alpha, beta, new_state, depth - 1))
+		state = make_move(move, state, draw_history)
+		alpha = max(alpha, ab_min(alpha, beta, state, depth - 1))
+		state = undo_move(state, draw_history)
+		
+		#new_state = copy.deepcopy(state)
+		#new_state = make_move(move, new_state, draw_history)
+		#alpha = max(alpha, ab_min(alpha, beta, new_state, depth - 1))
 		#state = undo_move(state, draw_history)
 		if alpha >= beta:
 			return beta
@@ -334,12 +342,12 @@ class CrazyEight:
 			new_state = copy.deepcopy(state)
 			new_state = make_move(move, new_state, draw_history)
 			if current_player == 0:
-				score = ab_max(-float('inf'), float('inf'), new_state, 9)
+				score = ab_max(-float('inf'), float('inf'), new_state, 16)
 				if score < bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
 			else:
-				score = ab_min(-float('inf'), float('inf'), new_state, 9)
+				score = ab_min(-float('inf'), float('inf'), new_state, 16)
 				if score > bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
