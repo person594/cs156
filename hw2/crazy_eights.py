@@ -334,12 +334,12 @@ class CrazyEight:
 			new_state = copy.deepcopy(state)
 			new_state = make_move(move, new_state, draw_history)
 			if current_player == 0:
-				score = ab_min(-float('inf'), float('inf'), new_state, 6)
+				score = ab_max(-float('inf'), float('inf'), new_state, 9)
 				if score < bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
 			else:
-				score = ab_max(-float('inf'), float('inf'), new_state, 6)
+				score = ab_min(-float('inf'), float('inf'), new_state, 9)
 				if score > bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
