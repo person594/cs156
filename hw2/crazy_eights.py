@@ -83,7 +83,6 @@ def flip_state(state):
 	deck = state[0]
 	old_hand = partial_state[2]
 	new_hand = state[1]
-	
 	return (deck, old_hand, (partial_state[0], partial_state[1], new_hand, partial_state[3]))
 	
 def gen_initial_state():
@@ -325,7 +324,7 @@ class CrazyEight:
 	def move(self, partial_state):
 		return
 	def move_perfect_knowlege(self, state):
-		current_player = state[2][3][-1][0]
+		current_player = 1 - state[2][3][-1][0]
 		moves = gen_moves(state[2])
 		assert len(moves) > 0
 		draw_history = []
