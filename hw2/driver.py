@@ -36,17 +36,19 @@ game_in_progress = True
 to_move = 0
 
 while(game_in_progress):
-		if player_choice == to_move:
-			print crazy_eights.state_string(state)
-			move = get_human_move(state)
-		else:
-			state = crazy_eights.flip_state(state)
-			print crazy_eights.state_string(state)
-			state = crazy_eights.flip_state(state)
-			move = get_comp_move(state)
-			print crazy_eights.move_string(move)
-		state = crazy_eights.make_move(move, state, [])
-		game_in_progress = not crazy_eights.is_game_over(state)
-		to_move = 1 - to_move
+	if player_choice == to_move:
+		print crazy_eights.state_string(state)
+		move = get_human_move(state)
+	else:
+		state = crazy_eights.flip_state(state)
+		print crazy_eights.state_string(state)
+		state = crazy_eights.flip_state(state)
+		move = get_comp_move(state)
+		print crazy_eights.move_string(move)
+	state = crazy_eights.make_move(move, state, [])
+	game_in_progress = not crazy_eights.is_game_over(state)
+	to_move = 1 - to_move
+
+print "Player " + str(crazy_eights.get_winner(state)) + " wins!"
 
 

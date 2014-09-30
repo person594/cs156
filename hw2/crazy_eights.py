@@ -16,7 +16,6 @@ def card_string(card_number):
 	return ranks[get_rank(card_number)] + suits[get_suit(card_number)]
 
 def move_string(move):
-	if move is None: traceback.print_stack()
 	player = move[0]
 	card = move[1]
 	pretty_card = card_string(card)
@@ -110,13 +109,19 @@ def gen_moves(partial_state):
 	current_history = partial_state[3]
 	current_rank = get_rank(current_card)
 	two_special_case = 0
+	last_move = current_history[-1]
+	last_rank = get_rank(last_move[1])
+	last_suit = last_move[2]
+	last_draw = last_move[3]
 
-	if (current_rank == 2):
-		two_special_case = 1
-	if (current_rank == 11 and current_history[-1][3] != -1):
-		return [(player_number, current_card, current_suit, -1)]
-	if (current_rank == 12 and current_suit == 0):
-		return [(player_number, current_card, current_suit, 5)]
+	#special cases: only apply when a card was played last turn, i.e. no cards drawn
+	if last_draw == 0:
+		if (last_rank == 2):
+			two_special_case = 1
+		if (last_rank == 11):
+			return [(player_number, current_card, current_suit, -1)]
+		if (last_rank == 12 and last_suit == 0):
+			return [(player_number, current_card, current_suit, 5)]
 	#Searches through hand for moves
 	for card in current_hand:
 		pos_rank = get_rank(card)
@@ -147,13 +152,15 @@ def gen_moves(partial_state):
 	return move_list
 
 def make_move(move, state, draw_history):
+	
 	partial_state = state[2]
-	card_played = move[1]
-	suit = partial_state[1]
 	hand = partial_state[2]
 	cards_drawn = move[3]
 	can_play = cards_drawn == 0
+	new_top_card = partial_state[0]
+	suit = partial_state[1]
 	deck = state[0]
+	card_played = move[1]
 	while cards_drawn > 0 and deck != []:
 		card = deck.pop()
 		hand |= {card}
@@ -164,9 +171,10 @@ def make_move(move, state, draw_history):
 	if (can_play):
 		assert card_played in hand
 		hand -= {card_played}
+		new_top_card = card_played
 		suit = move[2]
 		
-	end_state = (deck, state[1], (card_played, suit, hand, history))
+	end_state = (deck, state[1], (new_top_card, suit, hand, history))
 	return flip_state(end_state)
 	
 def undo_move(state, draw_history):
@@ -323,18 +331,18 @@ class CrazyEight:
 		bestMove = None
 		bestScore = 0;
 		for move in moves:
-			state = make_move(move, state, draw_history)
+			new_state = copy.deepcopy(state)
+			new_state = make_move(move, new_state, draw_history)
 			if current_player == 0:
-				score = ab_max(-float('inf'), float('inf'), state, 6)
+				score = ab_max(-float('inf'), float('inf'), new_state, 6)
 				if score < bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
 			else:
-				score = ab_min(-float('inf'), float('inf'), state, 6)
+				score = ab_min(-float('inf'), float('inf'), new_state, 6)
 				if score > bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
-			state = undo_move(state, draw_history)
 		assert not bestMove is None
 		return bestMove
 	
