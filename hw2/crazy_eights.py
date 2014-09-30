@@ -54,8 +54,10 @@ def state_string(state):
 	out += "Top Card: " + card_string(partial_state[0]) + "\n"
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
 	out += "Suit: " + suits[partial_state[1]] + '\n';
-	out += "History length: " + str(len(partial_state[3]))
-	return out + "\n"
+	out += "History length: " + str(len(partial_state[3])) + '\n'
+	for move in partial_state[3]:
+		out += move_string(move)
+	return out
 	
 def partial_state_string(partial_state):
 	face_up_card = partial_state[0]
@@ -108,7 +110,7 @@ def gen_moves(partial_state):
 	current_hand = partial_state[2]
 	current_history = partial_state[3]
 	current_rank = get_rank(current_card)
-	two_special_case = 0
+	two_special_case = False
 	last_move = current_history[-1]
 	last_rank = get_rank(last_move[1])
 	last_suit = last_move[2]
@@ -117,7 +119,7 @@ def gen_moves(partial_state):
 	#special cases: only apply when a card was played last turn, i.e. no cards drawn
 	if last_draw == 0:
 		if (last_rank == 2):
-			two_special_case = 1
+			two_special_case = True
 		if (last_rank == 11):
 			return [(player_number, current_card, current_suit, -1)]
 		if (last_rank == 12 and last_suit == 0):
@@ -127,26 +129,25 @@ def gen_moves(partial_state):
 		pos_rank = get_rank(card)
 		pos_suit = get_suit(card)
 		#Checks for eights in hand
-		if(pos_rank == 8 and two_special_case == 0):
+		if(pos_rank == 8 and not two_special_case):
 			eight_suit = 0
 			while eight_suit < 4:
 				move_list.append((player_number, card, eight_suit, 0))
 				eight_suit += 1
 		#Two special case
-		elif(two_special_case == 1 and pos_rank == 2):
+		elif(two_special_case and pos_rank == 2):
 			move_list.append((player_number, card, pos_suit, 0))
 		#checks for same number or suit
-		elif((current_suit == pos_suit or current_rank == pos_rank) and two_special_case == 0):
+		elif((current_suit == pos_suit or current_rank == pos_rank) and not two_special_case):
 			move_list.append((player_number, card, pos_suit, 0))
 	#Adds picked operations based on how many 2s were placed previously
-	if (two_special_case == 1):
-		cards_picked = 2
-		hist_index = -1
-		iter = 0
-		while -hist_index-1 < len(current_history) and get_rank(current_history[hist_index][0]) == 2:
+	if (two_special_case):
+		cards_picked = 0
+		from_back = 1
+		while from_back <= len(current_history) and get_rank(current_history[-from_back][1]) == 2 and current_history[-from_back][3] == 0:
 			cards_picked += 2
-			hist_index -= 1
-			move_list.append((player_number, 0, 0, cards_picked))
+			from_back += 1
+		move_list.append((player_number, 0, 0, cards_picked))
 	else:
 		move_list.append((player_number, 0, 0, 1))
 	return move_list
@@ -293,8 +294,8 @@ def ab_min(alpha, beta, state, depth):
 		new_state = make_move(move, new_state, draw_history)
 		beta = min(beta, ab_max(alpha, beta, new_state, depth - 1))
 		#state = undo_move(state, draw_history)
-		if beta < alpha:
-			return beta
+		if beta <= alpha:
+			return alpha
 	return beta
 
 # Minmax Algorithm: max
@@ -315,8 +316,8 @@ def ab_max(alpha, beta, state, depth):
 		new_state = make_move(move, new_state, draw_history)
 		alpha = max(alpha, ab_min(alpha, beta, new_state, depth - 1))
 		#state = undo_move(state, draw_history)
-		if alpha > beta:
-			return alpha
+		if alpha >= beta:
+			return beta
 	return alpha
 
 
@@ -334,16 +335,15 @@ class CrazyEight:
 			new_state = copy.deepcopy(state)
 			new_state = make_move(move, new_state, draw_history)
 			if current_player == 0:
-				score = ab_max(-float('inf'), float('inf'), new_state, 6)
+				score = ab_min(-float('inf'), float('inf'), new_state, 6)
 				if score < bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
 			else:
-				score = ab_min(-float('inf'), float('inf'), new_state, 6)
+				score = ab_max(-float('inf'), float('inf'), new_state, 6)
 				if score > bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
-		assert not bestMove is None
 		return bestMove
 	
 	
