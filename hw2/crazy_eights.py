@@ -3,7 +3,44 @@ import random
 import traceback
 
 player_number = 0
-		
+
+def hand_size_from_hist(history, player_number):
+	hand_size = 8
+	first_card = True
+	for move in history:
+		if first_card:
+			first_card = False
+			continue
+		if move[0] != player_number: continue
+		if move[3] == 0:
+			hand_size -= 1
+		elif move[3] > 0:
+			hand_size += move[3]
+	return hand_size
+
+def get_mystery_cards(partial_state):
+	mystery = set(range(52))
+	history = partial_state[3]
+	for move in history:
+		if move[3] != 0: continue
+		mystery.remove(move[1])
+	hand = partial_state[2]
+	mystery -= hand
+	return mystery
+	
+def random_state_from_partial(partial_state):
+	history = partial_state[3]
+	our_player_number = 1 - history[-1][0]
+	their_hand_size = hand_size_from_hist(history, 1 - our_player_number)
+	mystery = get_mystery_cards(partial_state)
+	their_hand = set(random.sample(mystery, their_hand_size))
+	mystery -= their_hand
+	deck = random.sample(mystery, len(mystery))
+	
+	return (deck, their_hand, partial_state)
+	
+	
+
 def get_suit(card_number):
 	return card_number / 13
 
@@ -179,8 +216,6 @@ def make_move(move, state, draw_history):
 	
 def undo_move(state, draw_history):
 	state = flip_state(state)
-	#if (move[0] == 1):
-		#flip state
 	partial_state = state[2]
 	hand = partial_state[2]
 	history = partial_state[3]
@@ -292,11 +327,6 @@ def ab_min(alpha, beta, state, depth):
 		state = make_move(move, state, draw_history)
 		beta = min(beta, ab_max(alpha, beta, state, depth - 1))
 		state = undo_move(state, draw_history)
-		
-		#new_state = copy.deepcopy(state)
-		#new_state = make_move(move, new_state, draw_history)
-		#beta = min(beta, ab_max(alpha, beta, new_state, depth - 1))
-		#state = undo_move(state, draw_history)
 		if beta <= alpha:
 			return alpha
 	return beta
@@ -318,20 +348,32 @@ def ab_max(alpha, beta, state, depth):
 		state = make_move(move, state, draw_history)
 		alpha = max(alpha, ab_min(alpha, beta, state, depth - 1))
 		state = undo_move(state, draw_history)
-		
-		#new_state = copy.deepcopy(state)
-		#new_state = make_move(move, new_state, draw_history)
-		#alpha = max(alpha, ab_min(alpha, beta, new_state, depth - 1))
-		#state = undo_move(state, draw_history)
 		if alpha >= beta:
 			return beta
 	return alpha
 
 
 class CrazyEight:
+	depth = 15
 	def move(self, partial_state):
-		return
+		possibilities_tried = 50
+		moves = {}
+		for p in range(possibilities_tried):
+			state = random_state_from_partial(partial_state)
+			move = self.move_perfect_knowlege(state)
+			if (move in moves):
+				moves[move]+= 1
+			else:
+				moves[move] = 1
+		mode = None
+		count = 0
+		for move in moves:
+			if moves[move] > count:
+				mode = move
+				count = moves[move]
+		return mode
 	def move_perfect_knowlege(self, state):
+		#this makes sense, trust me
 		current_player = 1 - state[2][3][-1][0]
 		moves = gen_moves(state[2])
 		assert len(moves) > 0
@@ -342,12 +384,12 @@ class CrazyEight:
 			new_state = copy.deepcopy(state)
 			new_state = make_move(move, new_state, draw_history)
 			if current_player == 0:
-				score = ab_max(-float('inf'), float('inf'), new_state, 16)
+				score = ab_max(-float('inf'), float('inf'), new_state, self.depth)
 				if score < bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
 			else:
-				score = ab_min(-float('inf'), float('inf'), new_state, 16)
+				score = ab_min(-float('inf'), float('inf'), new_state, self.depth)
 				if score > bestScore or bestMove is None:
 					bestScore = score
 					bestMove = move
