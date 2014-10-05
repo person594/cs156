@@ -5,6 +5,13 @@ import traceback
 player_number = 0
 
 def hand_size_from_hist(history, player_number):
+	"""
+	Calculates the hand size of the player given from the 
+	history of a state.
+	:param history: The history of a state.
+	:param player_number: The player by which the hand amount is calculated.
+	:return:  The hand size of the given player.
+	"""
 	hand_size = 8
 	first_card = True
 	for move in history:
@@ -19,6 +26,12 @@ def hand_size_from_hist(history, player_number):
 	return hand_size
 
 def get_mystery_cards(partial_state):
+	"""
+	Estimates the cards of the other player given the cards played in prior turns
+	:param partial_state: The state of the game without the contents of the 
+						  deck or the other player's cards.
+	:return: A set of cards that could be within the other player's hand.
+	"""
 	mystery = set(range(52))
 	history = partial_state[3]
 	for move in history:
@@ -29,6 +42,11 @@ def get_mystery_cards(partial_state):
 	return mystery
 	
 def random_state_from_partial(partial_state):
+	"""
+	Generates a random state given the possible cards that could still be in play
+	:param partial_state: The state that the player currently has access to.
+	:return: A estimated state of the current game.
+	"""
 	history = partial_state[3]
 	our_player_number = 1 - history[-1][0]
 	their_hand_size = hand_size_from_hist(history, 1 - our_player_number)
@@ -42,17 +60,41 @@ def random_state_from_partial(partial_state):
 
 
 def get_suit(card_number):
+	"""
+	Finds the suit of the card given its number in the deck.
+	:param card_number: The number of the card within the deck.
+	:return: The suit of the card where spades = 0, hearts = 1, 
+			 diamonds = 2, and clubs = 3
+	"""
 	return card_number / 13
 
 def get_rank(card_number):
+	"""
+	Finds the rank of the card given the card's number in the deck.
+	:param card_number: The number of the card.
+	:return: The rank of the card where 1-10 are there respective numbers
+			 and 11-13 are the face cards in thier order in typical card layouts
+	"""
 	return (card_number % 13) + 1
 	
 def card_string(card_number):
+	"""
+	Creates a string from a card that is more easily viewed.
+	:param card_number: The number of the card in the deck.
+	:return: A string where the card is displayed as [card rank][card suit]
+	"""
 	suits = ['S', 'H', 'D', 'C']
 	ranks = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K']
 	return ranks[get_rank(card_number)] + suits[get_suit(card_number)]
 
 def move_string(move, present_tense=False, first_turn=False):
+	"""
+	Creates a string from a move that is more easily viewed.
+	:param move: The move that is to be made into a string.
+	:param presend_tense: If the sentance being printed should be in the present tense.
+	:param first_turn: If the move is the first turn.
+	:return: A string where the move is displayed.
+	"""
 	player = move[0]
 	card = move[1]
 	pretty_card = card_string(card)
@@ -82,6 +124,11 @@ def move_string(move, present_tense=False, first_turn=False):
 				return "Player "+ str(player) + " picked up " + str(card_picked) + " cards"
 	
 def state_string(state):
+	"""
+	Creates a string from a state that is more easily viewed.
+	:param state: the state that is to be made into a string.
+	:return: A string where the state is displayed.
+	"""
 	deck = state[0]
 	their_hand = state[1]
 	partial_state = state[2]
@@ -108,6 +155,11 @@ def state_string(state):
 	return out
 	
 def history_string(history):
+	"""
+	Creates a string from a history that is more easily viewed.
+	:param history: The history that is to be made into a string.
+	:return: A string where the history is displayed.
+	"""
 	hist_string = "Game History:\n"
 	first = True
 	for move in history:
@@ -120,6 +172,11 @@ def history_string(history):
 	return hist_string;
 			
 def partial_state_string(partial_state):
+	"""
+	Creates a string from a partial state that is more easily viewed.
+	:param partial_state: The partial state that is to be made into a string.
+	:return: A string where the partial state is displayed.
+	"""
 	face_up_card = partial_state[0]
 	hand = partial_state[2]
 	history = partial_state[3]
@@ -133,6 +190,12 @@ def partial_state_string(partial_state):
 	return out;
 
 def flip_state(state):
+	"""
+	Generates a state where the cards in the hand are the other player's hand.
+	:param state: The state to be fliped.
+	:return: A state where the other player's hand is currently featured in the
+			 state
+	"""
 	partial_state = state[2]
 	deck = state[0]
 	old_hand = partial_state[2]
@@ -140,6 +203,10 @@ def flip_state(state):
 	return (deck, old_hand, (partial_state[0], partial_state[1], new_hand, partial_state[3]))
 	
 def gen_initial_state():
+	"""
+	Generates a state where the deck is shuffled and each player has 5 random cards.
+	:return: An initial state to play off of.
+	"""
 	deck = random.sample(range(52),52)
 	p0_hand = set()
 	p1_hand = set()
@@ -155,6 +222,13 @@ def gen_initial_state():
 	return initial_state
 
 def gen_moves(partial_state):
+	"""
+	Generates a list of possible moves a player can play given their hand 
+	as well as the card that is currently face up.
+	:param partial_state: The state that contains the face up card as well
+						  as the player hand and history.
+	:return: A list of moves that the current player can legally play.
+	"""
 	move_list = []
 	#May screw up everthing!!!
 	player_number = 1 - len(partial_state[3]) % 2
@@ -206,7 +280,14 @@ def gen_moves(partial_state):
 	return move_list
 
 def make_move(move, state, draw_history):
-	
+	"""
+	Makes a move on the current state.
+	:param move: The move to be played.
+	:param state: The state to be played on.
+	:param draw_history: The history of cards played.
+	:return: A new state where the move has been made and it is
+			 the opposing player's turn.
+	"""
 	partial_state = state[2]
 	hand = partial_state[2]
 	cards_drawn = move[3]
@@ -232,6 +313,12 @@ def make_move(move, state, draw_history):
 	return flip_state(end_state)
 	
 def undo_move(state, draw_history):
+	"""
+	Generates a state back to the previous state in the history.
+	:param state: The state to be reverted.
+	:param draw_history: The history of cards played.
+	:return: The state in it's previous state.
+	"""
 	state = flip_state(state)
 	partial_state = state[2]
 	hand = partial_state[2]
@@ -255,12 +342,22 @@ def undo_move(state, draw_history):
 	return end_state
 	
 def is_game_over(state):
+	"""
+	Tests to see in a give state whether a game is over.
+	:param state: The state given.
+	:return: True if the game is over.
+	"""
 	partial_state = state[2]
 	if len(state[0]) == 0 or len(state[1]) == 0 or partial_state[2] == 0:
 		return True
 	return False
 	
 def get_winner(state):
+	"""
+	Finds the winner of a given game.
+	:param state: The given game state.
+	:return: The player who has won the game.
+	"""
 	partial_state = state[2]
 	history = partial_state[3]
 	
@@ -293,9 +390,14 @@ def get_winner(state):
 		
 	return -1
 
-#Finds the player with the lowest card in their hand
-#Returns 0 if player one has lowest, 1 if player two has the lowest
+
 def get_lowest_card_winner(play_one_hand, play_two_hand):
+	"""
+	Finds the player with the lowest card in their hand
+	:param play_one_hand: Player one's hand.
+	:param play_two_hand: Player two's hand.
+	:return: The player with the lowest card in their hand.
+	"""
 	one_min = 53
 	two_min = 53
 	for card in play_one_hand:
@@ -312,8 +414,12 @@ def get_lowest_card_winner(play_one_hand, play_two_hand):
 		winner = 1
 	return winner
 	
-#Always returns player 0's hand and player 1's hand
 def get_player_hands(state):
+	"""
+	Finds the cards in each of the player's hands.
+	:param state: The current game state.
+	:return: Two lists containg each of the player's hands.
+	"""
 	partial_state = state[2]
 	history = partial_state[3]
 	most_recent_move = history[-1]
@@ -321,14 +427,30 @@ def get_player_hands(state):
 		return (state[1], partial_state[2])	
 	return (partial_state[2], state[1])
 
-#Determine the heuristic for choosing wich move to do.
-#player 0 wants low numbers, player 1 wants high numbers
+
 def get_heuristic(state):
+	"""
+	Determines the heuristic for choosing which move to do.
+	:param state: The current game state.
+	:return: The calculated heuristic for the current game state.
+	"""
 	hands = get_player_hands(state)
 	return (len(hands[0]) - len(hands[1])) / (len(hands[0]) + len(hands[1]))
 		
 # Minmax Algorithm: min
 def ab_min(alpha, beta, state, depth):
+	"""
+	Minimum component of the minmax algorithm used to find the minimum calculated
+	possible move set from the state provided where the move value is
+	determined by our heuristic.
+	:param alpha: The maximum limit of the minimum that determines if the
+				  current branch will continue to be searched.
+	:param beta: The minimum limit of the maximum that determines if the
+				  current branch will continue to be searched.
+	:param state: The current state of the game.
+	:param depth: The maximum depth in a tree allowed to be searched.
+	:return: The minimum move value from the state provided.
+	"""
 	if is_game_over(state):
 		winner = get_winner(state)
 		if winner == 0:
@@ -350,6 +472,18 @@ def ab_min(alpha, beta, state, depth):
 
 # Minmax Algorithm: max
 def ab_max(alpha, beta, state, depth):
+	"""
+	Maximum component of the minmax algorithm used to find the maximum calculated
+	possible move set from state provided where the move value is determined by
+	our heuristic.
+	:param alpha: The maximum limit of the minimum that determines if the
+				  current branch will continue to be searched.
+	:param beta: The minimum limit of the maximum that determines if the
+				  current branch will continue to be searched.
+	:param state: The current state of the game.
+	:param depth: The maximum depth in a tree allowed to be searched.
+	:return: The minimum move value from the state provided.
+	"""
 	if is_game_over(state):
 		winner = get_winner(state)
 		if winner == 0:
@@ -373,6 +507,10 @@ def ab_max(alpha, beta, state, depth):
 class CrazyEight:
 	depth = 11
 	def move(self, partial_state):
+		"""
+		Makes a move to the given partial state.
+		:param partial_state: The state that is being played on.
+		"""
 		possibilities_tried = 25
 		moves = {}
 		for p in range(possibilities_tried):
@@ -390,6 +528,12 @@ class CrazyEight:
 				count = moves[move]
 		return mode
 	def move_perfect_knowlege(self, state):
+		"""
+		Makes a move based off of complete knowledge of both players hands and
+		the cards remaining in the deck.
+		:param state: The current game state.
+		:return: The best move for the player to make
+		"""
 		#this makes sense, trust me
 		current_player = 1 - state[2][3][-1][0]
 		moves = gen_moves(state[2])
