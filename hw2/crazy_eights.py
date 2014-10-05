@@ -39,7 +39,7 @@ def random_state_from_partial(partial_state):
 	
 	return (deck, their_hand, partial_state)
 	
-	
+
 
 def get_suit(card_number):
 	return card_number / 13
@@ -96,6 +96,12 @@ def state_string(state):
 		out += move_string(move)
 	return out
 	
+def history_string(history):
+	hist_string = ""
+	for move in history:
+		if move[4] != -1:
+			hist_string = hist_string + "* " + move_string(move)
+			
 def partial_state_string(partial_state):
 	face_up_card = partial_state[0]
 	hand = partial_state[2]
