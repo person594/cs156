@@ -37,7 +37,7 @@ def main():
 	to_move = 0
 
 	while(game_in_progress):
-		#output history here
+		print crazy_eights.history_string(state[2][3])
 		if player_choice == to_move:
 			print crazy_eights.partial_state_string(state[2])
 			move = get_human_move(state)

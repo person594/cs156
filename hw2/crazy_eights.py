@@ -59,7 +59,7 @@ def move_string(move, present_tense=False, first_turn=False):
 	card_picked = move[3]
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
 	if first_turn:
-		return pretty_card + "was revealed!"
+		return pretty_card + " was revealed!"
 	if present_tense:
 		if card_picked == 0:
 			return "Play " + pretty_card +", making the current suit " + suits[move[2]]
@@ -77,9 +77,9 @@ def move_string(move, present_tense=False, first_turn=False):
 			return "Player "+ str(player) + "'s turn was skipped"
 		else:
 			if card_picked == 1:
-				return "Player "+ str(player) + " Picked up a card"
+				return "Player "+ str(player) + " picked up a card"
 			else:
-				return "Player "+ str(player) + " Picked up " + str(card_picked) + " cards"
+				return "Player "+ str(player) + " picked up " + str(card_picked) + " cards"
 	
 def state_string(state):
 	deck = state[0]
@@ -108,10 +108,16 @@ def state_string(state):
 	return out
 	
 def history_string(history):
-	hist_string = ""
+	hist_string = "Game History:\n"
+	first = True
 	for move in history:
-		if move[4] != -1:
+		if first:
+			first = False
+			hist_string += "* " + move_string(move, False, True) 
+		elif move[3] != -1:
 			hist_string = hist_string + "* " + move_string(move)
+		hist_string += "\n"
+	return hist_string;
 			
 def partial_state_string(partial_state):
 	face_up_card = partial_state[0]
