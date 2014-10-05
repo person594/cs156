@@ -52,20 +52,34 @@ def card_string(card_number):
 	ranks = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K']
 	return ranks[get_rank(card_number)] + suits[get_suit(card_number)]
 
-def move_string(move):
+def move_string(move, present_tense=False, first_turn=False):
 	player = move[0]
 	card = move[1]
 	pretty_card = card_string(card)
 	card_picked = move[3]
-	
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
-	if card_picked == 0:
-		return "Player "+ str(player) + " plays " + pretty_card +", Suit is now " + suits[move[2]] + "\n"
-	elif card_picked == -1:
-		return "Player "+ str(player) + "'s turn is skipped\n"
+	if first_turn:
+		return pretty_card + "was revealed!"
+	if present_tense:
+		if card_picked == 0:
+			return "Play " + pretty_card +", making the current suit " + suits[move[2]]
+		elif card_picked == -1:
+			return "Skip your turn"
+		else:
+			if card_picked == 1:
+				return "Pick up a card"
+			else:
+				return "Pick up " + str(card_picked) + " cards"
 	else:
-		return "Player "+ str(player) + " picks up " + str(card_picked) + " cards\n"
-	
+		if card_picked == 0:
+			return "Player "+ str(player) + " played " + pretty_card +", making the suit " + suits[move[2]]
+		elif card_picked == -1:
+			return "Player "+ str(player) + "'s turn was skipped"
+		else:
+			if card_picked == 1:
+				return "Player "+ str(player) + " Picked up a card"
+			else:
+				return "Player "+ str(player) + " Picked up " + str(card_picked) + " cards"
 	
 def state_string(state):
 	deck = state[0]
@@ -91,9 +105,6 @@ def state_string(state):
 	out += "Top Card: " + card_string(partial_state[0]) + "\n"
 	suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
 	out += "Suit: " + suits[partial_state[1]] + '\n';
-	out += "History length: " + str(len(partial_state[3])) + '\n'
-	for move in partial_state[3]:
-		out += move_string(move)
 	return out
 	
 def partial_state_string(partial_state):
@@ -106,14 +117,8 @@ def partial_state_string(partial_state):
 	try:
 		out += reduce(lambda a, b: a + ", " + b, map(card_string, hand)) + "\n"
 	except:
-		out += "<empty\n"
-	out += "Move History:\n"
-	try:
-		out += reduce(lambda a, b: a + ", " + b, map(move_string, history)) + "\n"
-	except:
-		out += "<empty>"
-	return out + "\n"
-	#comment to show a change
+		out += "<empty>\n"
+	return out;
 
 def flip_state(state):
 	partial_state = state[2]
@@ -354,9 +359,9 @@ def ab_max(alpha, beta, state, depth):
 
 
 class CrazyEight:
-	depth = 15
+	depth = 11
 	def move(self, partial_state):
-		possibilities_tried = 50
+		possibilities_tried = 25
 		moves = {}
 		for p in range(possibilities_tried):
 			state = random_state_from_partial(partial_state)
