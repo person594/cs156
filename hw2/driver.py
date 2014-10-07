@@ -27,14 +27,14 @@ def get_human_move(state):
 
 
 def get_comp_move(state):
-		"""
-		Gets the move that the computer makes given the current state.
-		:param state: The current game state.
-		:return: The move done by the computer.
-		"""
-		craz8 = crazy_eights.CrazyEight()
-		#return craz8.move_perfect_knowlege(state)
-		return craz8.move(state[2])
+	"""
+	Gets the move that the computer makes given the current state.
+	:param state: The current game state.
+	:return: The move done by the computer.
+	"""
+	craz8 = crazy_eights.CrazyEight()
+	#return craz8.move_perfect_knowlege(state)
+	return craz8.move(state[2])
 
 
 def main():
