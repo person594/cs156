@@ -31,7 +31,11 @@ def parse_file(filename):
 		#Finds new upperbound
 		if not second_term_is_var
 			if terms[1] > upperBound: upperBound = terms[1]
-	parsed = (varList, relList, upperBound)
+	varDic = {}
+	for var in varList:
+		tmp = {var : range(0, upperBound)}
+		varDic.append(tmp)
+	parsed = (varDic, relList)
 	return parsed
 
 
