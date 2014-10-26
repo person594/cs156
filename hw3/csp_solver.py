@@ -1,8 +1,13 @@
 import operator
 import sys
 
-#returns a tuple ({variable:domain}, [relations])
 def parse_file(filename):
+	"""
+	Parses a file to a dictionary of variables to their domain
+	and a list of relation
+	:param filename: The name of the file to pull data from.
+	:return: tuple of ({variable:domain}, [relations])
+	"""
 	varList = []
 	relList = []
 	upperBound = 0
@@ -47,6 +52,12 @@ def check_consistency(var, val, assignments, relations):
 
 
 def flip_relation(rel):
+	"""
+	Flips a relation so that an equivilent relation for the
+	latter variable is given to the first variable.
+	:param rel: the relation to be fliped.
+	:return: The relation with an equivilent but fliped relation
+	"""
 	if (rel[1] == operator.lt):
 		return (rel[2], operator.gt, rel[0])
 	elif (rel[1] == operator.gt):
@@ -57,6 +68,16 @@ def flip_relation(rel):
 
 #orders values based on the least-constraining-value heuristic
 def order_domain_values(var, assignment, csp):
+	"""
+	Orders values based on the least constraining value
+	heuristic.
+	:param var: The variable being ordered.
+	:param assignemnt: list of assignemnts for each variable
+	in the csp.
+	:param csp: The varaible dictionary and relations
+	:return: An orderlist of the values in var ordered by the
+	least constraining value heuristic.
+	"""
 	relations = set()
 	for relation in csp[1]:
 		if var[0] == relation[0]:
@@ -91,6 +112,16 @@ def Backtracking-Search(csp):
 
 
 def Backtrack(assignment, csp):
+	"""
+	Recurssively assigns each varible so that each relation
+	is consistant with each other.
+	:param assignment: List of assignments for each variable
+	in the csp.
+	:param csp: An orderlist of the values in var ordered by the
+	least constraining value heuristic.
+	:return: The list of consistant assignments for each
+	variable in the csp or false if it is not possibe.
+	"""
 	variable = None
 	for var in csp[0]:
 		if not var in assignment:
