@@ -39,10 +39,7 @@ def parse_file(filename):
 		varDic[var] = set(range(0, upperBound))
 	parsed = (varDic, relList)
 	file.close()
-	return parsed
-
-
-def check_consistency(var, val, assignments, relations):
+	return parsedS
 	
 
 
@@ -56,7 +53,7 @@ def flip_relation(rel):
 
 
 #orders values based on the least-constraining-value heuristic
-def order_domain_values(var, assignment, csp):
+def order_domain_values(var, csp):
 	relations = set()
 	for relation in csp[1]:
 		if var[0] == relation[0]:
@@ -64,7 +61,14 @@ def order_domain_values(var, assignment, csp):
 		elif var[0] == relation[2]:
 			relations.add(flip_relation(relation))
 	
+	inconsistent = set()
+	
 	def comparator(a, b):
+		if a in inconsistent:
+			return 1
+		if b in inconsistent:
+			return -1
+		
 		possible_a = 1
 		possible_b = 1
 		
@@ -79,12 +83,20 @@ def order_domain_values(var, assignment, csp):
 			possible_a *= n_a
 			possible_b *= n_b
 			if possible_a == 0:
+				inconsistent.add(a)
 				return 1
 			if possible_b == 0:
+				inconsistent.add(b)
 				return -1
 		return possible_b - possible_a
 	
-	return sorted(var[1], comparator)
+	sorted_domain = sorted(var[1], comparator)
+	sorted_consistent = []
+	for val in sorted_domain:
+		if val in inconsistent:
+			break
+		sorted_consistent.append(val)
+	return sorted_consistent
 
 def Backtracking-Search(csp):
 	return Backtrack({},csp)
@@ -98,22 +110,21 @@ def Backtrack(assignment, csp):
 			if (variable is None) or (len(var[1]) < len(variable[1])):
 				variable = var
 	if variable is None:
-		return assignment;
-	
-	
-	
+		return assignment
 		
-   for value in Order-Domain-Values(var, assignment, csp):
-        if value is consistent with assignment:
-            add {var= value} to assignment
-            inferences := INFERENCE(csp, var, value) 
-                //this might do AC-3 or the like
-            if inferences != failure then
-                add inferences to assignment
-                result := Backtrack(assignment, csp)
-                if result != failure then
-                    return result
-        remove {var = value} and inferences from assignment
+	domain = order_domain_values(variable, csp)
+	
+	for value in domain
+		appended_assignment = assignment.copy()
+		appended_assignment[var] = value
+		inferences := INFERENCE(csp, var, value) 
+				//this might do AC-3 or the like
+		if inferences != failure then
+				add inferences to assignment
+				result := Backtrack(assignment, csp)
+				if result != failure then
+						return result
+		remove {var = value} and inferences from assignment
    return failure
 
 
