@@ -8,13 +8,13 @@ def parse_file(filename):
 	:param filename: The name of the file to pull data from.
 	:return: tuple of ({variable:domain}, [relations])
 	"""
-	varList = []
-	relList = []
-	upperBound = 0
+	var_list = []
+	rel_list = []
+	upper_bound = 0
 	file = open(filename, 'r')
 	for line in file:
-		parseTuple = line.split()
-		terms = [parseTuple[0], parseTuple[2]]
+		pars_tuple = line.split()
+		terms = [pars_tuple[0], pars_tuple[2]]
 		#Checks if the first character in the variables are digits
 		second_term_is_var = True
 		if terms[0][0].isdigit():
@@ -24,27 +24,27 @@ def parse_file(filename):
 			terms[1] = int(terms[1])
 			second_term_is_var = False
 		#Checks list of variables for repeats
-		if not terms[0] in varList:
-			varList.append(terms[0])
-		if second_term_is_var and not terms[1] in varList:
+		if not terms[0] in var_list:
+			va_list.append(terms[0])
+		if second_term_is_var and not terms[1] in va_list:
 			varList.append(terms[1])
 		#Adds relation to the relation list
-		relation = parseTuple[1]
+		relation = parse_tuple[1]
 		if relation == 'ne': relation = operator.ne
 		elif relation == 'eq': relation = operator.eq
 		elif relation == 'lt': relation = operator.lt
 		elif relation == 'gt': relation = operator.gt
-		relList.append((terms[0], relation, terms[1]))
+		rel_list.append((terms[0], relation, terms[1]))
 		#Finds new upperbound
 		if not second_term_is_var:
-			if terms[1] > upperBound: upperBound = terms[1]
-	varDic = {}
-	upperBound = max(upperBound, len(varList)+1)
-	for var in varList:
-		varDic[var] = set(range(0, upperBound))
-	parsed = (varDic, relList)
+			if terms[1] > upper_bound: upper_bound = terms[1]
+	var_dic = {}
+	upper_bound = max(upper_bound, len(var_list)+1)
+	for var in var_list:
+		var_dic[var] = set(range(0, upper_bound))
+	parsed = (var_dic, rel_list)
 	file.close()
-	return parsedS
+	return parsed
 	
 
 
