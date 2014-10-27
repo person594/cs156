@@ -43,7 +43,20 @@ def parse_file(filename):
 	upper_bound = max(upper_bound, len(var_list)+1)
 	for var in var_list:
 		var_dic[var] = set(range(0, upper_bound))
-	parsed = (var_dic, rel_list)
+		
+	culled_rel_list = []
+	for rel in rel_list:
+		try:
+			n = int(rel[2])
+			new_domain = set()
+			for val in var_dic[rel[0]]:
+				if rel[1](val, n):
+					new_domain.add(val)
+			var_dic[rel[0]] = new_domain
+		except:
+			culled_rel_list.append(rel)
+			continue
+	parsed = (var_dic, culled_rel_list)
 	file.close()
 	return parsed
 	
@@ -78,9 +91,9 @@ def order_domain_values(var, csp):
 	"""
 	relations = set()
 	for relation in csp[1]:
-		if var[0] == relation[0]:
+		if var == relation[0]:
 			relations.add(relation)
-		elif var[0] == relation[2]:
+		elif var == relation[2]:
 			relations.add(flip_relation(relation))
 	
 	inconsistent = set()
@@ -151,7 +164,7 @@ def backtrack(assignment, csp):
 	
 	for value in domain:
 		new_assignment = assignment.copy()
-		new_assignment[var] = value
+		new_assignment[variable] = value
 		new_csp = copy.deepcopy(csp)
 		new_csp[0][variable] = {value}
 		if forward_search:
@@ -161,14 +174,14 @@ def backtrack(assignment, csp):
 		if inferences != False:
 				new_assignment.update(inferences)
 				result = backtrack(new_assignment, new_csp)
-				if result != failure:
+				if result:
 					return result
-	return failure
+	return False
 
 
 csp = parse_file(sys.argv[1])
+#print csp
+#exit()
 forward_search = False
 print backtracking_search(csp)
-for var in csp[0]:
-	print var + " e " + str(csp[0][var])
 
