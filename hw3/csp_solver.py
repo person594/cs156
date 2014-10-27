@@ -1,5 +1,6 @@
 import operator
 import sys
+import copy
 
 def parse_file(filename):
 	"""
@@ -119,6 +120,9 @@ def order_domain_values(var, csp):
 		sorted_consistent.append(val)
 	return sorted_consistent
 
+
+def ac_3_single_variable(new_csp, var):
+
 def Backtracking-Search(csp):
 	return Backtrack({},csp)
 
@@ -145,18 +149,21 @@ def Backtrack(assignment, csp):
 		
 	domain = order_domain_values(variable, csp)
 	
-	for value in domain
-		appended_assignment = assignment.copy()
-		appended_assignment[var] = value
-		inferences := INFERENCE(csp, var, value) 
-				//this might do AC-3 or the like
-		if inferences != failure then
-				add inferences to assignment
-				result := Backtrack(assignment, csp)
+	for value in domain:
+		new_assignment = assignment.copy()
+		new_assignment[var] = value
+		new_csp = copy.deepcopy(csp)
+		new_csp[0][variable] = {value}
+		if forward_search:
+			inferences := ac_3_single_variable(new_csp, var)
+		else:
+			inferences = {}
+		if inferences != False:
+				new_assignment.update(inferences)
+				result := Backtrack(new_assignment, new_csp)
 				if result != failure then
-						return result
-		remove {var = value} and inferences from assignment
-   return failure
+					return result
+	return failure
 
 
 csp = parse_file(sys.argv[1])
