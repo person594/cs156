@@ -45,7 +45,7 @@ def parse_file(filename):
 		varDic[var] = set(range(0, upperBound))
 	parsed = (varDic, relList)
 	file.close()
-	return parsedS
+	return parsed
 	
 
 
@@ -112,7 +112,7 @@ def order_domain_values(var, csp):
 				return -1
 		return possible_b - possible_a
 	
-	sorted_domain = sorted(var[1], comparator)
+	sorted_domain = sorted(csp[0][var], comparator)
 	sorted_consistent = []
 	for val in sorted_domain:
 		if val in inconsistent:
@@ -121,13 +121,13 @@ def order_domain_values(var, csp):
 	return sorted_consistent
 
 
-def ac_3_single_variable(new_csp, var):
+#def ac_3_single_variable(new_csp, var):
 
-def Backtracking-Search(csp):
-	return Backtrack({},csp)
+def backtracking_search(csp):
+	return backtrack({},csp)
 
 
-def Backtrack(assignment, csp):
+def backtrack(assignment, csp):
 	"""
 	Recurssively assigns each varible so that each relation
 	is consistant with each other.
@@ -155,18 +155,20 @@ def Backtrack(assignment, csp):
 		new_csp = copy.deepcopy(csp)
 		new_csp[0][variable] = {value}
 		if forward_search:
-			inferences := ac_3_single_variable(new_csp, var)
+			inferences = ac_3_single_variable(new_csp, var)
 		else:
 			inferences = {}
 		if inferences != False:
 				new_assignment.update(inferences)
-				result := Backtrack(new_assignment, new_csp)
-				if result != failure then
+				result = backtrack(new_assignment, new_csp)
+				if result != failure:
 					return result
 	return failure
 
 
 csp = parse_file(sys.argv[1])
+forward_search = False
+print backtracking_search(csp)
 for var in csp[0]:
 	print var + " e " + str(csp[0][var])
 
