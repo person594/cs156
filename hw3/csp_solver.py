@@ -119,11 +119,12 @@ def order_domain_values(var, csp):
 			possible_b *= n_b
 			if possible_a == 0:
 				inconsistent.add(a)
-				return 1
 			if possible_b == 0:
 				inconsistent.add(b)
-				return -1
-		return possible_b - possible_a
+		if possible_b > possible_a:
+			return 1
+		else:
+			return -1
 	
 	sorted_domain = sorted(csp[0][var], comparator)
 	sorted_consistent = []
@@ -132,15 +133,61 @@ def order_domain_values(var, csp):
 			break
 		sorted_consistent.append(val)
 	return sorted_consistent
+	
+def ac_3_complete(csp):
+	relations = []
+	for relation in csp[1]:
+		relations.append(relation)
+		relations.append(flip_relation(relation))
+	return ac_3_partial(csp, relations)
+	
+def ac_3_single_variable(csp, var):
+	relations = []
+	for relation in csp[1]:
+		if relation[2] == var:
+			relations.append(relation)
+		if relation[0] == var:
+			relations.append(flip_relation(relation))
+	return ac_3_partial(csp, relations)	
+	
+def revise(csp, relation):
+	revised = False
+	i = relation[0]
+	j = relation[2]
+	rel = relation[1]
+	new_d_i = csp[0][i].copy()
+	for i_val in csp[0][i]:
+		for j_val in csp[0][j]:
+			if not rel(i_val, j_val):
+				revised = True
+				new_d_i.remove(i_val)
+				break
+	csp[0][i] = new_d_i
+	return revised
+				
+	
+def ac_3_partial(csp, arcs):
+	assignment = {}
+	while len(arcs) > 0:
+		arc = arcs[0]
+		del arcs[0]
+		variable = arc[0]
+		if revise(csp, arc):
+			domain = csp[0][variable]
+			if len(domain) == 0: return False
+			if len(domain) == 1: (assignment[variable],) = domain
+			for relation in csp[1]:
+				if relation[2] == variable:
+					arcs.append(relation)
+				elif relation[0] == variable:
+					arcs.append(flip_relation(relation))
+	return assignment
+	
+	
 
 
-#def ac_3_single_variable(new_csp, var):
 
 def backtracking_search(csp):
-	return backtrack({},csp)
-
-
-def backtrack(assignment, csp):
 	"""
 	Recurssively assigns each varible so that each relation
 	is consistant with each other.
@@ -151,37 +198,46 @@ def backtrack(assignment, csp):
 	:return: The list of consistant assignments for each
 	variable in the csp or false if it is not possibe.
 	"""
-	variable = None
-	for var in csp[0]:
-		if not var in assignment:
-			#MRV heuristic
-			if (variable is None) or (len(var[1]) < len(variable[1])):
-				variable = var
-	if variable is None:
-		return assignment
+	def backtrack(assignment, csp):
+		variable = None
+		for var in csp[0]:
+			if not var in assignment:
+				#MRV heuristic
+				if (variable is None) or (len(csp[0][var]) < len(csp[0][variable])):
+					variable = var
+		if variable is None:
+			return assignment
+			
+		domain = order_domain_values(variable, csp)
 		
-	domain = order_domain_values(variable, csp)
-	
-	for value in domain:
-		new_assignment = assignment.copy()
-		new_assignment[variable] = value
-		new_csp = copy.deepcopy(csp)
-		new_csp[0][variable] = {value}
-		if forward_search:
-			inferences = ac_3_single_variable(new_csp, var)
-		else:
-			inferences = {}
-		if inferences != False:
-				new_assignment.update(inferences)
-				result = backtrack(new_assignment, new_csp)
-				if result:
-					return result
-	return False
+		for value in domain:
+			new_assignment = assignment.copy()
+			new_assignment[variable] = value
+			new_csp = copy.deepcopy(csp)
+			new_csp[0][variable] = {value}
+			if False:
+				inferences = ac_3_single_variable(new_csp, variable)
+			else:
+				inferences = {}
+			if inferences != False:
+					new_assignment.update(inferences)
+					result = backtrack(new_assignment, new_csp)
+					if result:
+						return result
+		return False
+		
+	return backtrack({},csp)
 
 
+forward_search = sys.argv[2]
 csp = parse_file(sys.argv[1])
 #print csp
 #exit()
-forward_search = False
-print backtracking_search(csp)
+sol = backtracking_search(csp);
+if sol:
+	var_list = sorted(list(sol.keys()))
+	for var in var_list:
+		print var + "=" + str(sol[var])
+else:
+	print 'NO SOLUTION'
 
