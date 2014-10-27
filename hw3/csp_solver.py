@@ -13,8 +13,8 @@ def parse_file(filename):
 	upper_bound = 0
 	file = open(filename, 'r')
 	for line in file:
-		pars_tuple = line.split()
-		terms = [pars_tuple[0], pars_tuple[2]]
+		parse_tuple = line.split()
+		terms = [parse_tuple[0], parse_tuple[2]]
 		#Checks if the first character in the variables are digits
 		second_term_is_var = True
 		if terms[0][0].isdigit():
@@ -25,9 +25,9 @@ def parse_file(filename):
 			second_term_is_var = False
 		#Checks list of variables for repeats
 		if not terms[0] in var_list:
-			va_list.append(terms[0])
-		if second_term_is_var and not terms[1] in va_list:
-			varList.append(terms[1])
+			var_list.append(terms[0])
+		if second_term_is_var and not terms[1] in var_list:
+			var_list.append(terms[1])
 		#Adds relation to the relation list
 		relation = parse_tuple[1]
 		if relation == 'ne': relation = operator.ne
