@@ -215,7 +215,7 @@ def backtracking_search(csp):
 			new_assignment[variable] = value
 			new_csp = copy.deepcopy(csp)
 			new_csp[0][variable] = {value}
-			if False:
+			if forward_search == 1:
 				inferences = ac_3_single_variable(new_csp, variable)
 			else:
 				inferences = {}
@@ -229,7 +229,7 @@ def backtracking_search(csp):
 	return backtrack({},csp)
 
 
-forward_search = sys.argv[2]
+forward_search = int(sys.argv[2])
 csp = parse_file(sys.argv[1])
 #print csp
 #exit()

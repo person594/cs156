@@ -1,0 +1,16 @@
+wa eq 0
+nsw eq 1
+nort eq 2
+sa ne wa
+sa ne nort
+sa ne ql
+sa ne nsw
+sa ne vic
+sa lt 3
+ql ne sa
+ql ne nsw
+ql ne nort
+ql lt 3
+vic ne nsw
+vic ne sa
+vic lt 3
