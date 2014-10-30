@@ -99,10 +99,6 @@ def order_domain_values(var, csp):
 	inconsistent = set()
 	
 	def comparator(a, b):
-		if a in inconsistent:
-			return 1
-		if b in inconsistent:
-			return -1
 		
 		possible_a = 1
 		possible_b = 1
@@ -121,7 +117,7 @@ def order_domain_values(var, csp):
 				inconsistent.add(a)
 			if possible_b == 0:
 				inconsistent.add(b)
-		if possible_b > possible_a:
+		if possible_b  > possible_a:
 			return 1
 		else:
 			return -1
