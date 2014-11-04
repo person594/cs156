@@ -154,10 +154,11 @@ def revise(csp, relation):
 	new_d_i = csp[0][i].copy()
 	for i_val in csp[0][i]:
 		for j_val in csp[0][j]:
-			if not rel(i_val, j_val):
-				revised = True
-				new_d_i.remove(i_val)
-				break
+			if rel(i_val, j_val):
+				break;
+		else:
+			revised = True
+			new_d_i.remove(i_val)
 	csp[0][i] = new_d_i
 	return revised
 				
@@ -170,7 +171,8 @@ def ac_3_partial(csp, arcs):
 		variable = arc[0]
 		if revise(csp, arc):
 			domain = csp[0][variable]
-			if len(domain) == 0: return False
+			if len(domain) == 0: 
+				return False
 			if len(domain) == 1: (assignment[variable],) = domain
 			for relation in csp[1]:
 				if relation[2] == variable:
