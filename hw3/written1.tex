@@ -1,6 +1,9 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,10pt]{article}
 
 \begin{document}
+
+Firstly, we write expressions for the values of the bits of each node in terms of the
+values of those nodes' children.\
 
 $V_{1,1} = \bigwedge\limits_{i=1}^3V_{1i,1}$\
 
@@ -28,7 +31,8 @@ $V_{1ij,3} = \bigwedge\limits_{k=1}^3\left(V_{1ijk,3} \vee \left(V_{1ijk,2} \opl
 \hfill\break
 \hfill\break
 
-
+Next, we change our equations to propositional logic biconditionals, and conjunct all of our terms
+together.   This gives us a single true expression to convert to CNF.\
 
 $V_{1,1} \leftrightarrow \bigwedge\limits_{i=1}^3V_{1i,1} \wedge $\
 
@@ -43,6 +47,7 @@ $V_{1i,2} \leftrightarrow \bigvee\limits_{j	=1}^3\left(V_{1ij,2} \wedge \neg \le
 
 $V_{1i,3} \leftrightarrow \bigvee\limits_{j=1}^3\left(V_{1ij,3} \wedge \neg \left(V_{1ij,2} \oplus V_{1i,2}\right) \wedge \neg \left(V_{1ij,1} \oplus V_{1i,1}\right) \right) \wedge $\
 
+
 $V_{1ij,1} \leftrightarrow \bigwedge\limits_{k=1}^3V_{1ijk,1} \wedge $\
 
 $V_{1ij,2} \leftrightarrow \bigwedge\limits_{k=1}^3\left(V_{1ijk,2} \vee \left(V_{1ijk,1} \oplus V_{1ij,1}\right) \right) \wedge $\
@@ -51,8 +56,15 @@ $V_{1ij,3} \leftrightarrow \bigwedge\limits_{k=1}^3\left(V_{1ijk,3} \vee \left(V
 
 
 \hfill\break
-\hfill\break
 
+Now, we begin simplifying each term of our massive conjunction to CNF, so that our whole expression
+will end up in CNF.\
+
+We do this by writing everything in terms of conjunctions, disjunctions, and negations, then distribute as
+necessary until we find ourselves in CNF.
+\
+
+\hfill\break
 
 $\left( \bigwedge\limits_{i=1}^3 \left(V_{1i,1} \vee \neg V_{1,1}\right) \right) \wedge \left(V_{1,1} \vee \bigvee\limits_{i=1}^3 \neg V_{1i,1}\right) \wedge$\
 
@@ -60,29 +72,48 @@ $\bigwedge \limits_{i=1}^3 \left( \left( \neg V_{1,2} \vee V_{1i,2} \vee V_{1,1}
 
 $\bigwedge \limits_{s \in \{1,2,3,4\}^3} \bigvee \limits_{i=1}^3 t_{s_i}$ \\ (where $ t_1 := V_{1,2} \vee \neg V_{1i,2}$, $t_2 := V_{1,2}$, $ t_3 := V_{1,2} \vee V_{1i,1} \vee \neg V_{1,1}$ and $t_4 := V_{1,2} \vee V_{1,1} \vee \neg V_{1i,1}$) \
 
-$\left( \bigwedge\limits_{i=1}^3\left( \neg V_{1,2} \vee V_{1i,2} \vee \left( \left(V_{1i,1} \vee V_{1,1}\right) \wedge \left(\neg V_{1i,1} \vee \neg V_{1,1}\right) \right) \right) \right)\wedge$\
+$\wedge$ \
+
+At this point, we gave up on manually expanding eeverything to CNF,
+as about half of the expansions cause the creation of $2^n$ new terms, and
+we grew tired of inventing notations in order to fit everything in a sensible
+amount of space.  It should be evident that the distributive law can
+properly yield the rest of these subexpressions into Conjunctive Normal form.
+
+$\neg V_{1,3} \vee \bigwedge\limits_{i=1}^3\left(V_{1i,3} \vee \left(\left(V_{1i,2} \vee V_{1,2}\right) \wedge \left(\neg V_{1i,2} \vee \neg V_{1,2} \right)\right) \vee \left(\left(V_{1i,1} \vee V_{1,1}\right) \wedge \left(\neg V_{1i,1} \vee \neg V_{1,1}\right) \right) \right) \wedge$\
+
+$V_{1,3} \vee \neg \bigwedge\limits_{i=1}^3\left(V_{1i,3} \vee \left(\left(V_{1i,2} \vee V_{1,2}\right) \wedge \left(\neg V_{1i,2} \vee \neg V_{1,2} \right)\right) \vee \left(\left(V_{1i,1} \vee V_{1,1}\right) \wedge \left(\neg V_{1i,1} \vee \neg V_{1,1}\right) \right) \right) \wedge$\
 
 
+$V_{1i,1} \vee \neg\bigvee\limits_{j=1}^3 V_{1ij,1} \wedge$\
 
+$\neg V_{1i,1} \vee \bigvee\limits_{j=1}^3 V_{1ij,1} \wedge$\
 
-$\left( \bigwedge\limits_{i=1}^3\left( \neg V_{1,2} \vee V_{1i,2} \vee \left( \left(V_{1i,1} \vee V_{1,1}\right) \wedge \left(\neg V_{1i,1} \vee \neg V_{1,1}\right) \right) \right) \right) \wedge \left(\neg \bigwedge\limits_{i=1}^3\left(V_{1i,2} \vee \left(V_{1i,1} \oplus V_{1,1}\right) \right) \vee V_{1,2} \right)\wedge$\
+$V_{1i,2} \vee \neg \bigvee\limits_{j	=1}^3\left(V_{1ij,2} \wedge \left( \left(V_{1ij,1} \wedge V_{1i,1}\right) \vee \left( \neg V_{1ij,1} \wedge \neg V_{1i,1}\right) \right) \right) \wedge$\
 
-$V_{1,3} \leftrightarrow \bigwedge\limits_{i=1}^3\left(V_{1i,3} \vee \left(V_{1i,2} \oplus V_{1,2}\right) \vee \left(V_{1i,1} \oplus V_{1,1}\right) \right) \wedge$\
+$\neg V_{1i,2} \vee  \bigvee\limits_{j	=1}^3\left(V_{1ij,2} \wedge \left( \left(V_{1ij,1} \wedge V_{1i,1}\right) \vee \left( \neg V_{1ij,1} \wedge \neg V_{1i,1}\right) \right) \right) \wedge$\
 
+$V_{1i,3} \vee \neg \bigvee\limits_{j=1}^3\left(V_{1ij,3} \wedge \left( \left(V_{1ij,2} \wedge V_{1i,2}\right) \vee \left(\neg V_{1ij,2} \wedge \neg V_{1i,2}\right) \right) \wedge \left( \left(V_{1ij,1} \wedge V_{1i,1}\right) \vee \left(\neg V_{1ij,1} \wedge \neg V_{1i,1}\right) \right) \right) \wedge$\
 
-$V_{1i,1} \leftrightarrow \bigvee\limits_{j=1}^3 V_{1ij,1} \wedge$\
-
-$V_{1i,2} \leftrightarrow \bigvee\limits_{j	=1}^3\left(V_{1ij,2} \wedge \neg \left(V_{1ij,1} \oplus V_{1i,1}\right) \right) \wedge$\
-
-$V_{1i,3} \leftrightarrow \bigvee\limits_{j=1}^3\left(V_{1ij,3} \wedge \neg \left(V_{1ij,2} \oplus V_{1i,2}\right) \wedge \neg \left(V_{1ij,1} \oplus V_{1i,1}\right) \right) \wedge$\
+$\neg V_{1i,3} \vee \bigvee\limits_{j=1}^3\left(V_{1ij,3} \wedge \left( \left(V_{1ij,2} \wedge V_{1i,2}\right) \vee \left(\neg V_{1ij,2} \wedge \neg V_{1i,2}\right) \right) \wedge \left( \left(V_{1ij,1} \wedge V_{1i,1}\right) \vee \left(\neg V_{1ij,1} \wedge \neg V_{1i,1}\right) \right) \right) \wedge$\
 
 \hfill\break
 
-$V_{1ij,1} \leftrightarrow \bigwedge\limits_{k=1}^3V_{1ijk,1} \wedge$\
+$\neg V_{1ij,1} \wedge \bigwedge\limits_{k=1}^3V_{1ijk,1} \wedge$\
 
-$V_{1ij,2} \leftrightarrow \bigwedge\limits_{k=1}^3\left(V_{1ijk,2} \vee \left(V_{1ijk,1} \oplus V_{1ij,1}\right) \right) \wedge$\
+$V_{1ij,1} \wedge \neg \bigwedge\limits_{k=1}^3V_{1ijk,1} \wedge$\
 
-$V_{1ij,3} \leftrightarrow \bigwedge\limits_{k=1}^3\left(V_{1ijk,3} \vee \left(V_{1ijk,2} \oplus V_{1ij,2}\right) \vee \left(V_{1ijk,1} \oplus V_{1ij,1}\right) \right) \wedge$\
+$V_{1ij,2} \vee \neg \bigwedge\limits_{k=1}^3\left(V_{1ijk,2} \vee \left( \left(V_{1ijk,1} \vee V_{1ij,1}\right) \wedge \left(\neg V_{1ijk,1} \vee \neg V_{1ij,1}\right) \right) \right) \wedge$\
+
+$\neg V_{1ij,2} \vee  \bigwedge\limits_{k=1}^3\left(V_{1ijk,2} \vee \left( \left(V_{1ijk,1} \vee V_{1ij,1}\right) \wedge \left(\neg V_{1ijk,1} \vee \neg V_{1ij,1}\right) \right) \right) \wedge$\
+
+$V_{1ij,3} \vee \neg \bigwedge\limits_{k=1}^3\left(V_{1ijk,3} \vee \left( \left(V_{1ijk,2} \vee V_{1ij,2}\right) \wedge
+ \left(\neg V_{1ijk,2} \vee \neg V_{1ij,2}\right) \right) \vee \left( \left(V_{1ijk,1} \vee V_{1ij,1}\right) \wedge \left(\neg V_{1ijk,1} \vee \neg V_{1ij,1}\right) \right) \right) $\
+
+$\wedge$
+
+$\neg V_{1ij,3} \vee \bigwedge\limits_{k=1}^3\left(V_{1ijk,3} \vee \left( \left(V_{1ijk,2} \vee V_{1ij,2}\right) \wedge
+ \left(\neg V_{1ijk,2} \vee \neg V_{1ij,2}\right) \right) \vee \left( \left(V_{1ijk,1} \vee V_{1ij,1}\right) \wedge \left(\neg V_{1ijk,1} \vee \neg V_{1ij,1}\right) \right) \right) $
 
 
 
