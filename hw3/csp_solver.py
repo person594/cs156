@@ -131,6 +131,11 @@ def order_domain_values(var, csp):
 	return sorted_consistent
 	
 def ac_3_complete(csp):
+    """
+    Finds all arcs within a given csp.
+    :param csp: The given set of relations.
+    :return: A set of all arcs in the csp.
+    """
 	relations = []
 	for relation in csp[1]:
 		relations.append(relation)
@@ -138,6 +143,13 @@ def ac_3_complete(csp):
 	return ac_3_partial(csp, relations)
 	
 def ac_3_single_variable(csp, var):
+    """
+    Finds all arcs pertaining to a single variable throughout
+    a csp.
+    :param csp: The given set of realtions.
+    :param var: The varible to find all arcs and relations to and from
+    :return: A set of arcs to and from the given variable.
+    """
 	relations = []
 	for relation in csp[1]:
 		if relation[2] == var:
@@ -147,6 +159,14 @@ def ac_3_single_variable(csp, var):
 	return ac_3_partial(csp, relations)	
 	
 def revise(csp, relation):
+    """
+    Given a realtion attempts to infer any other reductions
+    in assignments to the given values.
+    :param csp: The given csp.
+    :param relation: The given relation to use as a basis for 
+    reducing the number of relations in the given csp.
+    :return: true if the given csp has realtions that are not necessary
+    """
 	revised = False
 	i = relation[0]
 	j = relation[2]
@@ -164,6 +184,12 @@ def revise(csp, relation):
 				
 	
 def ac_3_partial(csp, arcs):
+    """
+    Finds all arcs for the remaining csp given a set of arcs.
+    :param csp: The given csp.
+    :param arcs: The arcs already found or otherwise excluded.
+    :return: A set of arcs for the remaining csp.
+    """
 	assignment = {}
 	while len(arcs) > 0:
 		arc = arcs[0]
