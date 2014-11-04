@@ -1,7 +1,8 @@
-wa eq 0
-nsw eq 1
+wa eq 1
+nsw eq 2
 nort eq 2
 sa ne wa
+nsw eq 1
 sa ne nort
 sa ne ql
 sa ne nsw
