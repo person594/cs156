@@ -1,3 +1,16 @@
+"""
+Homework 3
+CSP solver
+Intro to Artificial Intelligence
+Professor Pollett
+
+Authors:
+Sean Papay 007323511
+Ryan Lichtig 007264348
+Dakota Polenz 007879664
+"""
+
+
 import operator
 import sys
 import copy
