@@ -1,0 +1,171 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+	\title{Homework 4}
+	\author{Sean Papay\\
+		007323511
+		\and
+		Dakota Polenz\\
+		007879664
+		\and
+		Ryan Lichtig\\
+		007264348
+	}
+	\date{}
+\maketitle
+	\begin{description}
+		\item[Problem 9.10] \hfill \\
+		The riddle can be expressed in first-order logic as:\\
+		$Male(m) \wedge$\\
+		$(\neg \exists s:Brother(s, I) \vee Sister(s, I)) \wedge
+		(\exists f:Son(f, Father(I)) \wedge f = Father(m))$ \\
+		Where $I$ represents the speaker in the riddle, and $m$ represents ``that man''.
+		From this, we can use the axioms of the kinship domain to deduce the identity
+		of ``that man'':
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\neg \exists s:Brother(s, I) \vee Sister(s, I)) \wedge \\
+			(\exists f:Son(f, Father(I)) \wedge f = Father(m)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\neg \exists s:(Sibling(s, I) \wedge Male(s)) \vee (Sibling(s, I) \wedge Female(s)) \wedge \\
+			(\exists f:Son(f, Father(I)) \wedge f = Father(m)) 
+		\end{split}
+		\end{equation}
+		
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\neg \exists s:Sibling(s, I) \wedge (Male(s) \vee Female(s))) \wedge \\
+			(\exists f:Son(f, Father(I)) \wedge f = Father(m)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\neg \exists s:Sibling(s, I)) \wedge \\
+			(\exists f:Son(f, Father(I)) \wedge f = Father(m)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\neg \exists s:Sibling(s, I)) \wedge \\
+			(\exists f:Son(f, Father(I)) \wedge Parent(f, m) \wedge Male(f)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\neg \exists s:Sibling(s, I)) \wedge \\
+			(\exists f:Child(f, Father(I)) \wedge Parent(f, m) \wedge Male(f)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\neg \exists s: s \neq I \wedge(\exists p: Parent(p, s) \wedge Parent(p, I))) \wedge \\
+			(\exists f:Child(f, Father(I)) \wedge Parent(f, m) \wedge Male(f)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\forall s: s = I \vee \neg (\exists p: Parent(p, s) \wedge Parent(p, I))) \wedge \\
+			(\exists f:Child(f, Father(I)) \wedge Parent(f, m) \wedge Male(f)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\forall s: s = I \vee \neg (\exists p: Parent(p, s) \wedge Parent(p, I))) \wedge \\
+			(\exists f, g:g = Father(I) \wedge Child(f, g) \wedge Parent(f, m) \wedge Male(f)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\forall s: s = I \vee \neg (\exists p: Parent(p, s) \wedge Parent(p, I))) \wedge \\
+			(\exists f, g:Parent(g, I) \wedge Child(f, g) \wedge Parent(f, m) \wedge Male(f) \wedge Male(g)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\forall s: s = I \vee \neg (\exists p: Parent(p, s) \wedge Parent(p, I))) \wedge \\
+			(\exists f, g:Parent(g, I) \wedge Parent(g, f) \wedge Parent(f, m) \wedge Male(f) \wedge Male(g)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\forall s: (\exists p: Parent(p, s) \wedge Parent(p, I)) \rightarrow s = I) \wedge \\
+			(\exists f, g:Parent(g, I) \wedge Parent(g, f) \wedge Parent(f, m) \wedge Male(f) \wedge Male(g)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge \\
+			(\forall s: (\exists p: Parent(p, s) \wedge Parent(p, I)) \rightarrow s = I) \wedge \\
+			(\exists f: f = I \wedge Parent(f, m) \wedge Male(f)) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge Parent(I, m) \wedge Male(I) 
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Male(m) \wedge Child(m, I)
+		\end{split}
+		\end{equation}
+		
+		\begin{equation}
+		\begin{split}
+			Son(m, I)
+		\end{split}
+		\end{equation}
+		
+		From this, we can conclude that ``that man'' is, in fact, the speaker's son.\\
+		\\
+		In prenex normal form, the original riddle can be expressed as follows:\\
+		
+		$\exists f : \forall s: (\neg Brother(s, I)\vee
+		\neg Son(f, Father(I)) \vee \neg f = Father(m) \vee \neg Male(m)) \wedge (\neg Sister(s, I) \vee
+		\neg Son(f, Father(I)) \vee \neg f = Father(m) \vee \neg Male(m)) $
+		
+	\item[Problem 9.23] \hfill
+	\begin{description}
+		\item[a.]
+		Premise: $\forall h: Horse(h) \rightarrow Animal(h)$\\
+		Conclusion: $\forall c, q: (HeadOf(c, q) \wedge Horse(q)) \rightarrow 
+		\exists a: (HeadOf(c, a) \wedge Animal(a))$
+		
+		\item[b.]
+		Premise: $\neg Horse(h) \vee Animal(h)$\\
+		Conclusion: $\exists c, q: \forall a: (HeadOf(c, q) \wedge Horse(q)) \wedge 
+		(\neg HeadOf(c, a) \vee \neg Animal(a))$
+		
+		\end{description}
+	
+	\end{description}
+\end{document}
