@@ -173,5 +173,48 @@
 		\end{description}
 	
 	\item[Additional Problem 1]
-	\end{description}
+	For information about our intial state and our actions, refer to the files
+	$\{aditional1.n.jpeg|n \in \{1,2\}\}$. \\
+	See the file planninggraph.pdf for a visual representation of our
+	planning graph. The execution of graphplan on this problem would procede
+	as follows: The planning graph would initially contain only the initial
+	fluents, those that appear in column S0. Graphplan would populate the
+	planning graph up to time step 3, at which point our goal state appears
+	among our fluents.  At this point, we perfom a backward search, but find
+	no valid plan to reach our goal.  We continue to time step 4, and notice
+	our fluents have leveled off.  We perform a second backward search, and
+	still find no goal; however, our no-goods have not yet leveled off, so
+	we continue.  We do the same for time step 5, and again find no valid
+	plan.  At time step 6, however, our backward search yields a valid plan,
+	at which point graphplan terminates succesfully.
+	\item[Additional Problem 2]
+	To solve the frame problem, PDDL specifies the result of an action in 
+	terms of what changes .while everything that stays the same is left 
+	unmentioned. \\
+	Disadvantages to formulating problems in PDDL is that PDDL does not 
+	have a universal quantifier, which means that objects that are similar
+	but originally defined separately need to be individually 
+	quantified when envoking actions on the objects.
+	
+	\item[Additional Problem 3] \hfill \\
+	$Republican(Nixion) \wedge Quaker(Nixion) \wedge Californian(Nixion)
+	\wedge Hippie(x) \rightarrow Pacifist(x)$
+	\begin{enumerate}
+	\item $Republican(x): \neg Pacifist(x) / \neg Pacifist(x)$ \\
+	\item $Quaker(x): Pacifist(x) / Pacifist(x)$ \\
+	\item $Californian(x): Hippie(x) / Hippie(x)$ \\
+	\item $Republican(x): \neg Hippie(x) / \neg Hippie(x)$
+	\end{enumerate}
+ In our example we state that being a hippie implies that one is also a pacifist.
+ This precludes the possibility of Nixon being simultaneously a hippie and
+ not a pacifist, leaving 3 possible combinations of pacifism and hippyism.
+ We intend to show each of these combinations is an extension of our system.
+ In the case that Nixon is a pacifist hippy, he abides by exactly two
+ default rules, those for Quakers and Californians.  In the case that he
+ is a Pacifist, but not a hippy, he abides by the default rules for Quakers
+ and one of the default rules for Republicans.  In the case that he is neither
+ a pacifist or a hippie, he abides by both default rules for Republicans.
+ Since each of these cases is maximal, there exist exactly three extensions
+ to our system.
+\end{description}
 \end{document}
