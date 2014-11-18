@@ -162,10 +162,16 @@
 		
 		\item[b.]
 		Premise: $\neg Horse(h) \vee Animal(h)$\\
-		Conclusion: $\exists c, q: \forall a: (HeadOf(c, q) \wedge Horse(q)) \wedge 
-		(\neg HeadOf(c, a) \vee \neg Animal(a))$
-		
+		Conclusion: $HeadOf(C, Q) \wedge Horse(Q) \wedge 
+		(\neg HeadOf(C, a) \vee \neg Animal(a))$
+		\item[c.]
+		$(\neg HeadOf(C, Q) \vee \neg Animal(Q)), HeadOf(C, Q) \over \neg Animal(Q)$ \\
+		\\
+		$\neg Animal(Q), (\neg Horse(h) \vee Animal(h)) \over \neg Horse(Q) $\\
+		\\
+		$\neg Horse(Q), Horse(Q) \over \bot$
 		\end{description}
 	
+	\item[Additional Problem 1]
 	\end{description}
 \end{document}
