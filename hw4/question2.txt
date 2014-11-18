@@ -1,0 +1,2 @@
+To solve the frame problem PDDL specifies the result of an action in terms of what changes while everything else that stays the same is left unmentioned. 
+Disadvantages to formulating problems in PDDL is that PDDL does not have a universal quantifier which means that objects similar but originally defined separate need to be individually quantified when envoking actions on the objects.

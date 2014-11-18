@@ -1,0 +1,16 @@
+Republican(Nixion) and Quaker(Nixion) and Californian(Nixion)
+Hippie(x) -> Pacifist(x)
+
+1.Republican(x): ~Pacifist(x) / ~Pacifist(x)
+2.Quaker(x): Pacifist(x) / Pacifist(x)
+3.Californian(x): Hippie(x) / Hippie(x)
+4.Republican(x): ~Hippie(x) / ~Hippie(x)
+
+
+Hippie, Pacifist
+ff, ft, tt
+
+ In our example we assume that being a hippie implies that they are also a pacifist, Therefore the possible values for those attributes are either both are false, one is a hippie but not a pacififist, or one is a hippie and a pacifist. 
+ For the set {Republican(Nixion), Quaker(Nixion), Californian(Nixion), ~Hippie(Nixion), ~Pacifist(Nixion)} the first and last statements can be derived.
+ For the set {Republican(Nixion), Quaker(Nixion), Californian(Nixion), Hippie(Nixion), Pacifist(Nixion)} the scond and third statement can be derived.
+ {Republican(Nixion), Quaker(Nixion), Californian(Nixion), ~Hippie(Nixion), Pacifist(Nixion)} The last and second statements can be derived.
